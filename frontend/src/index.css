@@ -1,1 +1,103 @@
-@import 'tailwindcss'
+@import 'tailwindcss';
+
+@theme {
+  --color-inverse-on-surface: #2d3038;
+  --color-on-primary-container: #00285b;
+  --color-secondary-fixed-dim: #c2c7d0;
+  --color-surface-tint: #acc7ff;
+  --color-on-surface: #e0e2ec;
+  --color-background: #10131a;
+  --color-warning: #D29922;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-on-tertiary-container: #481e00;
+  --color-tertiary-fixed: #ffdbc8;
+  --color-tertiary: #ffb68b;
+  --color-on-secondary: #2c3138;
+  --color-on-tertiary-fixed-variant: #753400;
+  --color-on-tertiary-fixed: #321300;
+  --color-outline: #8b909f;
+  --color-primary: #2f81f7;
+  --color-inverse-primary: #005bbf;
+  --color-tertiary-container: #e47014;
+  --color-surface-container: #1d2027;
+  --color-on-secondary-fixed-variant: #42474f;
+  --color-surface-variant: #32353c;
+  --color-primary-fixed-dim: #acc7ff;
+  --color-surface-container-low: #181c23;
+  --color-surface-container-highest: #32353c;
+  --color-text-secondary: #8B949E;
+  --color-bg-base: #0D1117;
+  --color-on-primary: #002f68;
+  --color-on-background: #e0e2ec;
+  --color-surface-bright: #363941;
+  --color-success: #238636;
+  --color-bg-card: #1C2128;
+  --color-primary-container: #498fff;
+  --color-surface-dim: #10131a;
+  --color-on-primary-fixed: #001a40;
+  --color-secondary-container: #42474f;
+  --color-on-error-container: #ffdad6;
+  --color-on-tertiary: #522300;
+  --color-tertiary-fixed-dim: #ffb68b;
+  --color-on-secondary-container: #b1b5bf;
+  --color-error: #ffb4ab;
+  --color-secondary: #c2c7d0;
+  --color-on-surface-variant: #c1c6d6;
+  --color-inverse-surface: #e0e2ec;
+  --color-surface-container-lowest: #0b0e15;
+  --color-primary-fixed: #d7e2ff;
+  --color-on-primary-fixed-variant: #004492;
+  --color-danger: #DA3633;
+  --color-outline-variant: #414754;
+  --color-border-muted: #30363D;
+  --color-secondary-fixed: #dee2ec;
+  --color-surface: #10131a;
+  --color-text-primary: #F0F6FC;
+  --color-on-secondary-fixed: #171c23;
+  --color-surface-container-high: #272a31;
+
+  --radius-DEFAULT: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 0.75rem;
+
+  --font-display: "Geist", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-code: "JetBrains Mono", monospace;
+}
+
+body {
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-base); 
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-muted); 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-outline-variant); 
+}
+
+/* Animations for progress ring */
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+
+.animate-progress {
+  animation: progress 1s ease-out forwards;
+}
