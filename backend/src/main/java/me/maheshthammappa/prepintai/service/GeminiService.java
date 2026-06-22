@@ -23,9 +23,9 @@ public class GeminiService {
     @Value("${gemini.api.key}")
     private String geminiApiKey;
 
-    public GeminiService(ObjectMapper objectMapper) {
+    public GeminiService() {
         this.restClient = RestClient.create();
-        this.objectMapper = objectMapper;
+        this.objectMapper = new ObjectMapper();
     }
 
     /**

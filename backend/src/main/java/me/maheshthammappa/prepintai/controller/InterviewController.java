@@ -7,7 +7,6 @@ import me.maheshthammappa.prepintai.dto.QuestionResponse;
 import me.maheshthammappa.prepintai.service.GeminiService;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/interview")
 public class InterviewController {
