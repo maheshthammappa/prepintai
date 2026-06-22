@@ -20,12 +20,12 @@ public class TestController {
         return "Backend is Running Successfully";
     }
 
-    @GetMapping("/connection-test")
+    @GetMapping("/backend-connection")
     public String checkFrontendBackendConnection() {
         return "Frontend and Backend Connected Successfully";
     }
 
-    @GetMapping("/db-test")
+    @GetMapping("/database-connection")
     public String checkDatabaseConnection() {
         try {
             testRepository.count();
