@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
-function Test() {
+function BackendConnection() {
   const [message, setMessage] = useState("Checking connection...");
 
   useEffect(() => {
     api
-      .get("/connection-test")
+      .get("/backend-connection")
       .then((response) => {
         setMessage(response.data);
       })
       .catch(() => {
-        setMessage("Connection Failed");
+        setMessage("Backend Connection Failed");
       });
   }, []);
 
   return (
-    <div>
-      <h1>{message}</h1>
+    <div className="text-center max-w-7xl mx-auto min-h-screen flex flex-col justify-center">
+      <h1 className="text-3xl">{message}</h1>
     </div>
   );
 }
 
-export default Test;
+export default BackendConnection;
