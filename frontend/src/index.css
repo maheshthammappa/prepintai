@@ -101,3 +101,15 @@ body {
 .animate-progress {
   animation: progress 1s ease-out forwards;
 }
+
+/* Hide browser default number input spin buttons */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

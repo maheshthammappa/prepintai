@@ -4,7 +4,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-bg-base text-text-primary min-h-screen w-full flex flex-col justify-between p-gutter relative font-body overflow-x-hidden">
+    <div className="bg-bg-base text-text-primary min-h-screen w-full flex flex-col justify-between p-4 md:p-6 relative font-body overflow-x-hidden">
       {/* Background Grid Pattern */}
       <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to right, #30363D 1px, transparent 1px), linear-gradient(to bottom, #30363D 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.1 }}></div>
       
@@ -16,12 +16,6 @@ const Home = () => {
           </div>
           <span className="font-headline-md text-xl font-extrabold text-primary tracking-tight">PrepIntAI</span>
         </div>
-        <button
-          onClick={() => navigate('/setup')}
-          className="bg-surface-variant hover:bg-outline-variant text-text-primary font-semibold text-xs py-2 px-4 rounded transition-all active:scale-95 duration-100"
-        >
-          Sign In
-        </button>
       </header>
 
       {/* Main Hero Body */}
@@ -41,14 +35,14 @@ const Home = () => {
           <div className="flex items-center gap-4 pt-2">
             <button
               onClick={() => navigate('/setup')}
-              className="bg-primary hover:bg-primary/95 text-white font-bold text-sm py-3 px-8 rounded flex items-center gap-2 shadow-lg hover:shadow-primary/10 transition-all active:scale-95 duration-100"
+              className="bg-primary hover:bg-primary/95 text-white font-bold text-sm h-11 w-48 rounded flex items-center justify-center gap-2 shadow-lg hover:shadow-primary/10 transition-all active:scale-95 duration-100"
             >
               Start Practicing
-              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
+              <span className="material-symbols-outlined text-sm leading-none" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
             </button>
             <button
               onClick={() => window.open('https://github.com', '_blank')}
-              className="border border-border-muted hover:bg-surface-variant text-text-primary font-semibold text-sm py-3 px-8 rounded transition-all active:scale-95 duration-100"
+              className="border border-border-muted hover:bg-surface-variant text-text-primary font-semibold text-sm h-11 w-48 rounded flex items-center justify-center transition-all active:scale-95 duration-100"
             >
               View on GitHub
             </button>
@@ -104,10 +98,7 @@ const Home = () => {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="max-w-6xl w-full mx-auto py-6 border-t border-border-muted text-center text-xs text-text-secondary relative z-10 shrink-0">
-        PrepIntAI © {new Date().getFullYear()} — Built for developers. Powered by Gemini API.
-      </footer>
+
     </div>
   );
 };

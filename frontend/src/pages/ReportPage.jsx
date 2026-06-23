@@ -45,50 +45,85 @@ const ReportPage = () => {
   ];
 
   return (
-    <div className="bg-bg-base text-text-primary min-h-screen flex flex-col font-body pb-12">
-      {/* Top Banner Header */}
-      <header className="bg-bg-card border-b border-border-muted pt-12 pb-8 px-gutter relative overflow-hidden">
-        {/* Background glow decoration */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-success opacity-5 blur-[100px] rounded-full pointer-events-none"></div>
-        
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-6 relative z-10">
-          <div>
-            <div className="flex items-center gap-3 mb-2 flex-wrap">
-              <span className="bg-success/10 text-success border border-success/20 px-3 py-1 rounded-full font-label-md text-[10px] font-bold flex items-center gap-1">
-                <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                Evaluation Complete
-              </span>
-              <span className="text-text-secondary text-xs font-semibold">Topic: {topic}</span>
+    <div className="bg-bg-base text-text-primary min-h-screen flex flex-col font-body pb-12 relative">
+      {/* Top Header */}
+      <header className="h-16 border-b border-border-muted bg-surface-container-low shrink-0 relative z-20 flex items-center w-full">
+        <div className="max-w-[1300px] w-full mx-auto px-4 md:px-6 flex justify-between items-center">
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
+            <div className="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
+              <span className="material-symbols-outlined text-on-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>neurology</span>
             </div>
-            <h1 className="font-display text-4xl font-bold text-on-surface tracking-tight mb-1">Interview Performance Report</h1>
-            <p className="font-body text-text-secondary text-sm font-semibold">{experienceLevel} Mock Assessment</p>
+            <span className="font-headline-md text-xl font-extrabold text-primary tracking-tight">PrepIntAI</span>
           </div>
-          
-          <div className="flex items-center gap-6">
-            <div className="text-right">
-              <p className="font-label-md text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">Overall Score</p>
-              <div className="flex items-baseline gap-1">
-                <span className="font-display text-5xl font-extrabold text-success">{report.overallScore}</span>
-                <span className="font-headline-md text-lg font-bold text-text-secondary">/100</span>
-              </div>
-            </div>
+
+          <div className="flex items-center gap-4">
             <button
-              onClick={() => navigate('/setup')}
-              className="bg-primary text-white hover:bg-primary/90 px-5 py-2.5 rounded font-semibold text-xs transition-colors flex items-center gap-2 shadow-lg"
+              onClick={() => navigate('/')}
+              className="bg-surface-variant hover:bg-outline-variant text-text-primary font-semibold text-xs py-2 px-4 rounded transition-all active:scale-95 duration-100 flex items-center gap-1.5"
             >
-              <span className="material-symbols-outlined text-sm">refresh</span>
-              Start New Practice
+              <span className="material-symbols-outlined text-[16px]">home</span>
+              Home
             </button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-5xl w-full mx-auto px-gutter py-8 space-y-8">
-        
-        {/* Overall summary card */}
-        <section className="bg-bg-card border border-border-muted rounded-xl p-6 shadow-md">
-          <h2 className="font-headline-md text-lg font-bold text-on-surface mb-3">Overall Summary</h2>
-          <p className="text-text-secondary text-sm leading-relaxed">{report.overallSummary}</p>
+      {/* Background Grid Pattern */}
+      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to right, #30363D 1px, transparent 1px), linear-gradient(to bottom, #30363D 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.1 }}></div>
+
+      {/* Combined Evaluation Report & Summary Card */}
+      <div className="max-w-[1300px] w-full mx-auto px-4 md:px-6 pt-8 pb-4 space-y-8 relative z-10">
+        <section className="bg-bg-card border border-border-muted rounded-xl p-6 md:p-8 shadow-md relative overflow-hidden animate-fadeIn">
+          {/* Background glow decoration */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-success opacity-5 blur-[100px] rounded-full pointer-events-none"></div>
+          
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-6 border-b border-border-muted relative z-10">
+            <div>
+              <div className="flex items-center gap-3 mb-2.5 flex-wrap">
+                <span className="bg-success/10 text-success border border-success/20 px-3 py-1 rounded-full font-label-md text-[10px] font-bold flex items-center gap-1">
+                  <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                  Evaluation Complete
+                </span>
+                <span className="text-text-secondary text-xs font-semibold">Topic: {topic}</span>
+              </div>
+              <h1 className="font-display text-4xl font-bold text-on-surface tracking-tight mb-1">Interview Performance Report</h1>
+              <p className="font-body text-text-secondary text-sm font-semibold">{experienceLevel} Mock Assessment</p>
+            </div>
+            
+            {/* Stunning Glassmorphic Score Card */}
+            <div className="flex items-center gap-4 bg-surface-variant/40 border border-border-muted px-5 py-3 rounded-xl backdrop-blur-md shadow-sm min-w-[200px]">
+              <div className="relative w-12 h-12 flex items-center justify-center">
+                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    className="text-border-muted"
+                    strokeWidth="3"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path
+                    className={`${getScoreStrokeClass(report.overallScore)} transition-all duration-1000 ease-out`}
+                    strokeDasharray={`${report.overallScore}, 100`}
+                    strokeWidth="2.8"
+                    strokeLinecap="round"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                </svg>
+                <span className="absolute text-xs font-extrabold text-on-surface">{report.overallScore}%</span>
+              </div>
+              <div>
+                <p className="font-label-md text-[10px] font-bold text-text-secondary uppercase tracking-wider mb-0.5">Overall Score</p>
+                <p className="text-[11px] text-text-secondary font-semibold">Assessment Rating</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-6 relative z-10">
+            <h2 className="font-headline-md text-lg font-bold text-on-surface mb-3">Overall Summary</h2>
+            <p className="text-text-secondary text-sm leading-relaxed">{report.overallSummary}</p>
+          </div>
         </section>
 
         {/* Bento Grid: Sub-Metrics circular indicators */}
