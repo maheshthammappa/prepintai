@@ -64,6 +64,11 @@ public class GeminiService {
             "You are an expert technical interviewer.\n" +
             "Generate exactly %d interview questions for the topic: \"%s\" and experience level: \"%s\".\n" +
             "The questions should cover deep conceptual, syntactical, framework design, performance tuning, and architectural scenarios.\n" +
+"Each question must be concise, professional, and interview-ready.\n" +
+"Keep each question should contain maximum 30 words and 3 sentences .\n" +
+"Never exceed 40 words.\n" +
+"Do not include explanations, hints, examples, expected answers, follow-up questions, or background context.\n" +
+"Write questions exactly as a real interviewer would ask them.\n" +
             "You must return the response strictly as a JSON object matching this schema:\n" +
             "{\n" +
             "  \"topic\": \"topic name\",\n" +
@@ -106,7 +111,12 @@ public class GeminiService {
             "You are an expert technical interviewer and AI grader.\n" +
             "You are provided with a candidate's answers to the interview questions on the topic: \"%s\" and experience level: \"%s\".\n\n" +
             "Candidate Answers:\n%s\n" +
-            "Evaluate the candidate's responses. Provide a question-by-question evaluation. For each question, determine a score (0-100), give comprehensive feedback pointing out correct aspects and gaps, and a single high-quality \"suggestedAnswer\" combining the best way to answer it with code samples/guidelines if relevant.\n" +
+            "Evaluate the candidate's responses. Provide a question-by-question evaluation. For each question, determine a score (0-100), give comprehensive feedback pointing out correct aspects and gaps.\n" +
+            "The \"suggestedAnswer\" must represent how a strong candidate would answer in a real technical interview.\n" +
+            "Keep suggestedAnswer concise (maximum 7 sentences, maximum 150 words).\n" +
+            "Focus on key concepts, practical understanding, and interview-ready communication.\n" +
+            "Do not provide long tutorials, detailed explanations, step-by-step guides, or extensive code examples.\n" +
+            "Include a precise code snippet only if necessary.\n" +
             "Also provide overall statistics: an overall score (0-100), key strengths, key weaknesses, suggestions for improvement, and a summary feedback report.\n" +
             "You must return the response strictly as a JSON object matching this schema:\n" +
             "{\n" +
