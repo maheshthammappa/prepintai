@@ -9,6 +9,17 @@ const apiClient = axios.create({
   },
 });
 
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 /**
  * Request Gemini to generate interview questions.
  */
@@ -30,6 +41,49 @@ export const evaluateInterview = async (topic, experienceLevel, answers) => {
     experienceLevel,
     answers,
   });
+  return response.data;
+};
+
+/**
+ * Fetch the list of past mock interview sessions.
+ */
+export const getHistory = async () => {
+  const response = await apiClient.get('/api/interview/history');
+  return response.data;
+};
+
+/**
+ * Fetch details of a specific past mock interview session.
+ */
+export const getHistoryDetail = async (id) => {
+  const response = await apiClient.get(`/api/interview/history/${id}`);
+  return response.data;
+};
+
+/**
+ * Request Gemini to generate interview questions based on a resume.
+ */
+export const generateQuestionsFromResume = async (formData) => {
+  const response = await apiClient.post('/api/interview/generate-from-resume', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+export const login = async (username, password) => {
+  const response = await apiClient.post('/api/auth/login', { username, password });
+  return response.data;
+};
+
+export const register = async (username, email, password) => {
+  const response = await apiClient.post('/api/auth/register', { username, email, password });
+  return response.data;
+};
+
+export const getMe = async () => {
+  const response = await apiClient.get('/api/auth/me');
   return response.data;
 };
 

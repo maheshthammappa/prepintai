@@ -1,8 +1,16 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { evaluateInterview } from '../services/api';
 
-const InterviewPage = () => {
+const InterviewPage = ({ 
+  questions: propQuestions, 
+  topic: propTopic, 
+  experienceLevel: propLevel, 
+  duration: propDuration,
+  onFinishInterview,
+  onExit,
+  isEmbedded = false
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -27,9 +35,9 @@ const InterviewPage = () => {
 
   const savedSession = getSavedSession();
 
-  const questions = savedSession ? savedSession.questions : routeQuestions;
-  const topic = savedSession ? savedSession.topic : routeTopic;
-  const experienceLevel = savedSession ? savedSession.experienceLevel : routeLevel;
+  const questions = savedSession ? savedSession.questions : (propQuestions || routeQuestions);
+  const topic = savedSession ? savedSession.topic : (propTopic || routeTopic);
+  const experienceLevel = savedSession ? savedSession.experienceLevel : (propLevel || routeLevel);
 
   const [currentIndex, setCurrentIndex] = useState(() => {
     return savedSession ? savedSession.currentIndex : 0;
@@ -41,17 +49,17 @@ const InterviewPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [timeLeft, setTimeLeft] = useState(() => {
-    return savedSession ? savedSession.timeLeft : duration * 60;
+    return savedSession ? savedSession.timeLeft : (propDuration || duration) * 60;
   });
 
   const recognitionRef = useRef(null);
 
   // Redirect to setup if accessed directly without state
   useEffect(() => {
-    if (questions.length === 0) {
-      navigate('/setup');
+    if (questions.length === 0 && !isEmbedded) {
+      navigate('/standard-practice');
     }
-  }, [questions, navigate]);
+  }, [questions, navigate, isEmbedded]);
 
   // Save state to sessionStorage on any changes
   useEffect(() => {
@@ -149,7 +157,7 @@ const InterviewPage = () => {
     handleNext();
   };
 
-  const handleSubmitInterview = async () => {
+  const handleSubmitInterview = useCallback(async () => {
     setLoading(true);
     setError('');
     
@@ -166,12 +174,16 @@ const InterviewPage = () => {
     try {
       const report = await evaluateInterview(topic, experienceLevel, formattedAnswers);
       setLoading(false);
-      navigate('/report', { state: { report, topic, experienceLevel } });
+      if (onFinishInterview) {
+        onFinishInterview(report, topic, experienceLevel);
+      } else {
+        navigate('/report', { state: { report, topic, experienceLevel } });
+      }
     } catch (err) {
       setLoading(false);
       setError(err.response?.data?.message || 'Failed to submit interview for AI evaluation. Please verify your backend server connection and try again.');
     }
-  };
+  }, [questions, answers, topic, experienceLevel, onFinishInterview, navigate]);
 
   // Helper to format remaining seconds into MM:SS
   const formatTime = (seconds) => {
@@ -198,19 +210,23 @@ const InterviewPage = () => {
   }, [loading]);
 
   // Auto-submit when time runs out
+  const hasAutoSubmitted = useRef(false);
   useEffect(() => {
-    if (timeLeft === 0 && !loading) {
+    if (timeLeft === 0 && !loading && !hasAutoSubmitted.current) {
+      hasAutoSubmitted.current = true;
       handleSubmitInterview();
     }
-  }, [timeLeft, loading]);
+  }, [timeLeft, loading, handleSubmitInterview]);
 
   if (questions.length === 0) return null;
 
   return (
-    <div className="bg-bg-base text-text-primary h-screen w-full flex flex-col font-body relative overflow-hidden">
+    <div className={isEmbedded ? "w-full flex flex-col font-body relative overflow-hidden h-full" : "bg-bg-base text-text-primary h-screen w-full flex flex-col font-body relative overflow-hidden"}>
       {loading ? (
         <div className="flex-1 flex flex-col items-center justify-center p-8 min-h-[80vh] relative z-10">
-          <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to right, #30363D 1px, transparent 1px), linear-gradient(to bottom, #30363D 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.1 }}></div>
+          {!isEmbedded && (
+            <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to right, #30363D 1px, transparent 1px), linear-gradient(to bottom, #30363D 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.1 }}></div>
+          )}
           <div className="bg-bg-card border border-border-muted rounded-xl p-12 shadow-[0_0_40px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center space-y-6 max-w-lg z-10">
             <div className="w-16 h-16 border-4 border-success border-t-transparent rounded-full animate-spin"></div>
             <h2 className="font-headline-md text-2xl font-bold text-center text-success">AI Evaluation in Progress</h2>
@@ -220,42 +236,48 @@ const InterviewPage = () => {
       ) : (
         <>
           {/* Top Header */}
-          <header className="h-16 border-b border-border-muted bg-surface-container-low shrink-0 relative z-20 flex items-center w-full">
-            <div className="max-w-[1300px] w-full mx-auto px-4 md:px-6 flex justify-between items-center">
-              <div
-                className="flex items-center gap-3 cursor-pointer"
-                onClick={() => {
-                  sessionStorage.removeItem('prepintai_active_session');
-                  navigate('/setup');
-                }}
-              >
-                <div className="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
-                  <span className="material-symbols-outlined text-on-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>neurology</span>
-                </div>
-                <span className="font-headline-md text-xl font-extrabold text-primary tracking-tight">PrepIntAI</span>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <button
-                  type="button"
+          {!isEmbedded && (
+            <header className="h-16 border-b border-border-muted bg-surface-container-low shrink-0 relative z-20 flex items-center w-full">
+              <div className="max-w-[1300px] w-full mx-auto px-4 md:px-6 flex justify-between items-center">
+                <div
+                  className="flex items-center gap-3 cursor-pointer"
                   onClick={() => {
                     sessionStorage.removeItem('prepintai_active_session');
-                    navigate('/setup');
+                    if (onExit) onExit();
+                    else navigate('/standard-practice');
                   }}
-                  className="bg-surface-variant hover:bg-outline-variant text-text-primary font-semibold text-xs py-2 px-4 rounded transition-all active:scale-95 duration-100 flex items-center gap-1.5"
                 >
-                  <span className="material-symbols-outlined text-[16px]">logout</span>
-                  Exit Session
-                </button>
+                  <div className="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
+                    <span className="material-symbols-outlined text-on-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>neurology</span>
+                  </div>
+                  <span className="font-headline-md text-xl font-extrabold text-primary tracking-tight">PrepIntAI</span>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sessionStorage.removeItem('prepintai_active_session');
+                      if (onExit) onExit();
+                      else navigate('/standard-practice');
+                    }}
+                    className="bg-surface-variant hover:bg-outline-variant text-text-primary font-semibold text-xs py-2 px-4 rounded transition-all active:scale-95 duration-100 flex items-center gap-1.5"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">logout</span>
+                    Exit Session
+                  </button>
+                </div>
               </div>
-            </div>
-          </header>
+            </header>
+          )}
 
           {/* Background Grid Pattern */}
-          <div className="absolute inset-0 pointer-events-none animate-fadeIn" style={{ backgroundImage: 'linear-gradient(to right, #30363D 1px, transparent 1px), linear-gradient(to bottom, #30363D 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.1 }}></div>
+          {!isEmbedded && (
+            <div className="absolute inset-0 pointer-events-none animate-fadeIn" style={{ backgroundImage: 'linear-gradient(to right, #30363D 1px, transparent 1px), linear-gradient(to bottom, #30363D 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.1 }}></div>
+          )}
 
           {/* Centered Workspace Container */}
-          <main className="flex-1 flex items-center justify-center px-4 md:px-6 py-4 md:py-5 relative z-10 overflow-hidden">
+          <main className={isEmbedded ? "flex-1 flex items-center justify-center p-2 relative z-10 overflow-hidden" : "flex-1 flex items-center justify-center px-4 md:px-6 py-4 md:py-5 relative z-10 overflow-hidden"}>
             <div className="w-full max-w-[1300px] bg-bg-card border border-border-muted rounded-xl p-5 md:p-6 shadow-[0_0_40px_rgba(0,0,0,0.5)] flex flex-col gap-4 md:gap-5 h-full overflow-hidden">
               
               {/* Card Header: Session Details & Timer & Progress Bar */}
@@ -392,15 +414,32 @@ const InterviewPage = () => {
 
               {/* Navigation Actions */}
               <div className="flex justify-between items-center border-t border-border-muted pt-4 shrink-0">
-                <button
-                  type="button"
-                  onClick={handlePrevious}
-                  disabled={currentIndex === 0}
-                  className="flex items-center gap-1 text-text-secondary hover:text-on-surface disabled:opacity-30 disabled:hover:text-text-secondary font-semibold text-[11px] md:text-xs py-1.5 px-2.5 md:py-2 md:px-3 rounded hover:bg-surface-variant transition-colors"
-                >
-                  <span className="material-symbols-outlined text-sm">chevron_left</span>
-                  Previous
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handlePrevious}
+                    disabled={currentIndex === 0}
+                    className="flex items-center gap-1 text-text-secondary hover:text-on-surface disabled:opacity-30 disabled:hover:text-text-secondary font-semibold text-[11px] md:text-xs py-1.5 px-2.5 md:py-2 md:px-3 rounded hover:bg-surface-variant transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-sm">chevron_left</span>
+                    Previous
+                  </button>
+                  {isEmbedded && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (window.confirm("Are you sure you want to exit the current session? Your progress will be lost.")) {
+                          sessionStorage.removeItem('prepintai_active_session');
+                          if (onExit) onExit();
+                        }
+                      }}
+                      className="flex items-center gap-1 text-danger hover:bg-danger/10 font-semibold text-[11px] md:text-xs py-1.5 px-2.5 md:py-2 md:px-3 rounded transition-colors border border-danger/20"
+                    >
+                      <span className="material-symbols-outlined text-sm">logout</span>
+                      Exit
+                    </button>
+                  )}
+                </div>
 
                 <div className="flex items-center gap-2.5 md:gap-3">
                   <button

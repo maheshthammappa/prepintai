@@ -95,6 +95,47 @@ public class GeminiService {
     }
 
     /**
+     * Calls Gemini API to generate custom interview questions based on the candidate's resume content.
+     */
+    public QuestionResponse generateQuestionsFromResume(String resumeText, String experienceLevel, int questionCount) {
+        String prompt = String.format(
+            "You are an expert technical interviewer.\n" +
+            "You are provided with a candidate's resume content below:\n" +
+            "--- RESUME TEXT ---\n%s\n-------------------\n\n" +
+            "Analyze the skills, projects, programming languages, databases, frameworks, and tools listed in the resume.\n" +
+            "Generate exactly %d custom interview questions tailored specifically to this candidate's resume and experience level \"%s\".\n" +
+            "The questions should challenge the candidate on the technologies they claim to know, their projects, and their design decisions.\n" +
+            "Each question must be concise, professional, and interview-ready.\n" +
+            "Keep each question should contain maximum 30 words and 3 sentences .\n" +
+            "Never exceed 40 words.\n" +
+            "Do not include explanations, hints, examples, expected answers, follow-up questions, or background context.\n" +
+            "Write questions exactly as a real interviewer would ask them.\n" +
+            "You must return the response strictly as a JSON object matching this schema:\n" +
+            "{\n" +
+            "  \"topic\": \"Resume-Based Custom Assessment\",\n" +
+            "  \"experienceLevel\": \"%s\",\n" +
+            "  \"questions\": [\n" +
+            "    {\n" +
+            "      \"id\": 1,\n" +
+            "      \"questionText\": \"Question description...\"\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}\n" +
+            "Do not return any markdown formatting outside of JSON. Do not prefix with ```json or anything. Just raw JSON.",
+            resumeText, questionCount, experienceLevel, experienceLevel
+        );
+
+        try {
+            String rawJsonString = callGeminiApi(prompt);
+            return objectMapper.readValue(rawJsonString, QuestionResponse.class);
+        } catch (GeminiServiceException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate questions from resume: " + e.getMessage(), e);
+        }
+    }
+
+    /**
      * Calls Gemini API to evaluate candidate answers.
      */
     public InterviewReport evaluateInterview(AnswerSubmission submission) {

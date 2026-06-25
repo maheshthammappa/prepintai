@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { generateQuestions } from '../services/api';
 
-const SetupPage = () => {
+const SetupPage = ({ onStartInterview, onCancel, isEmbedded = false }) => {
   const navigate = useNavigate();
   const [topic, setTopic] = useState('Java');
   const [customTopic, setCustomTopic] = useState('');
   const [experienceLevel, setExperienceLevel] = useState('Intermediate');
   const [questionCount, setQuestionCount] = useState(5);
   const [duration, setDuration] = useState(10);
-  const [mode, setMode] = useState('text');
+  const mode = 'text';
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -31,15 +31,25 @@ const SetupPage = () => {
     try {
       const response = await generateQuestions(selectedTopic, experienceLevel, questionCount);
       setLoading(false);
-      navigate('/interview', {
-        state: {
+      if (onStartInterview) {
+        onStartInterview({
           questions: response.questions,
           topic: selectedTopic,
           experienceLevel,
           duration,
           mode
-        }
-      });
+        });
+      } else {
+        navigate('/interview', {
+          state: {
+            questions: response.questions,
+            topic: selectedTopic,
+            experienceLevel,
+            duration,
+            mode
+          }
+        });
+      }
     } catch (err) {
       setLoading(false);
       setError(err.response?.data?.message || 'Failed to generate interview questions. Please make sure the backend server is running and try again.');
@@ -47,34 +57,38 @@ const SetupPage = () => {
   };
 
   return (
-    <div className="bg-bg-base text-text-primary h-screen w-full flex flex-col font-body relative overflow-hidden">
+    <div className={isEmbedded ? "w-full flex flex-col font-body relative overflow-hidden h-full" : "bg-bg-base text-text-primary h-screen w-full flex flex-col font-body relative overflow-hidden"}>
       {/* Background Grid Pattern */}
-      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to right, #30363D 1px, transparent 1px), linear-gradient(to bottom, #30363D 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.1 }}></div>
+      {!isEmbedded && (
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to right, #30363D 1px, transparent 1px), linear-gradient(to bottom, #30363D 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.1 }}></div>
+      )}
 
       {/* Top Header */}
-      <header className="h-16 border-b border-border-muted bg-surface-container-low shrink-0 relative z-20 flex items-center w-full">
-        <div className="max-w-4xl w-full mx-auto px-4 md:px-6 flex justify-between items-center">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
-            <div className="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
-              <span className="material-symbols-outlined text-on-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>neurology</span>
+      {!isEmbedded && (
+        <header className="h-16 border-b border-border-muted bg-surface-container-low shrink-0 relative z-20 flex items-center w-full">
+          <div className="max-w-4xl w-full mx-auto px-4 md:px-6 flex justify-between items-center">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
+              <div className="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
+                <span className="material-symbols-outlined text-on-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>neurology</span>
+              </div>
+              <span className="font-headline-md text-xl font-extrabold text-primary tracking-tight">PrepIntAI</span>
             </div>
-            <span className="font-headline-md text-xl font-extrabold text-primary tracking-tight">PrepIntAI</span>
-          </div>
 
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/')}
-              className="bg-surface-variant hover:bg-outline-variant text-text-primary font-semibold text-xs py-2 px-4 rounded transition-all active:scale-95 duration-100 flex items-center gap-1.5"
-            >
-              <span className="material-symbols-outlined text-[16px]">home</span>
-              Home
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate('/')}
+                className="bg-surface-variant hover:bg-outline-variant text-text-primary font-semibold text-xs py-2 px-4 rounded transition-all active:scale-95 duration-100 flex items-center gap-1.5"
+              >
+                <span className="material-symbols-outlined text-[16px]">home</span>
+                Home
+              </button>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       {/* Main Content Area */}
-      <main className="flex-1 flex p-4 md:p-6 overflow-y-auto relative w-full z-10">
+      <main className={isEmbedded ? "flex-1 flex p-2 overflow-hidden relative w-full z-10" : "flex-1 flex p-4 md:p-6 overflow-y-auto relative w-full z-10"}>
         <div className="w-full max-w-4xl relative z-10 my-auto mx-auto">
           {loading ? (
             <div className="bg-bg-card border border-border-muted rounded-xl p-12 shadow-[0_0_40px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center space-y-6">
@@ -230,7 +244,10 @@ const SetupPage = () => {
                 <div className="pt-6 flex gap-4 border-t border-border-muted w-full">
                   <button
                     type="button"
-                    onClick={() => navigate('/')}
+                    onClick={() => {
+                      if (onCancel) onCancel();
+                      else navigate('/');
+                    }}
                     className="flex-1 py-2.5 border border-border-muted rounded text-text-primary font-semibold text-sm hover:bg-surface-variant transition-colors text-center"
                   >
                     Cancel

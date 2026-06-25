@@ -1,20 +1,240 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { getHistoryDetail } from '../services/api';
+import { Skeleton } from '../components/Skeleton';
 
-const ReportPage = () => {
+const RadarChart = ({ metrics }) => {
+  const cx = 130;
+  const cy = 110;
+  const R = 65;
+
+  const angles = [-Math.PI / 2, 0, Math.PI / 2, Math.PI];
+  const rings = [0.25, 0.5, 0.75, 1.0];
+
+  const points = metrics.map((m, idx) => {
+    const angle = angles[idx];
+    const score = m.score;
+    const x = cx + (score / 100) * R * Math.cos(angle);
+    const y = cy + (score / 100) * R * Math.sin(angle);
+    return { x, y, label: m.name, score };
+  });
+
+  const polygonPath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ') + ' Z';
+
+  return (
+    <div className="w-full h-full relative flex items-center justify-center">
+      <svg viewBox="0 0 260 220" className="w-full h-full overflow-visible">
+        {/* Concentric grid circles */}
+        {rings.map((r, i) => (
+          <circle
+            key={i}
+            cx={cx}
+            cy={cy}
+            r={R * r}
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.05)"
+            strokeWidth="1"
+          />
+        ))}
+
+        {/* Axis lines and labels */}
+        {angles.map((angle, idx) => {
+          const xMax = cx + R * Math.cos(angle);
+          const yMax = cy + R * Math.sin(angle);
+          
+          let textAnchor = 'middle';
+          let dy = '0.35em';
+          let lx = cx + (R + 14) * Math.cos(angle);
+          let ly = cy + (R + 14) * Math.sin(angle);
+
+          if (idx === 0) {
+            textAnchor = 'middle';
+            ly = cy - R - 10;
+            dy = '0';
+          } else if (idx === 1) {
+            textAnchor = 'start';
+            lx = cx + R + 8;
+          } else if (idx === 2) {
+            textAnchor = 'middle';
+            ly = cy + R + 10;
+            dy = '0.8em';
+          } else if (idx === 3) {
+            textAnchor = 'end';
+            lx = cx - R - 8;
+          }
+
+          return (
+            <g key={idx}>
+              <line
+                x1={cx}
+                y1={cy}
+                x2={xMax}
+                y2={yMax}
+                stroke="rgba(255, 255, 255, 0.1)"
+                strokeWidth="1"
+              />
+              <text
+                x={lx}
+                y={ly}
+                textAnchor={textAnchor}
+                dy={dy}
+                fill="var(--color-text-secondary)"
+                fontSize="9"
+                fontWeight="600"
+                fontFamily="var(--font-body)"
+                className="opacity-90 uppercase tracking-wider"
+              >
+                {metrics[idx].name.split(' ')[0]}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Data polygon */}
+        {polygonPath && (
+          <path
+            d={polygonPath}
+            fill="var(--color-primary)"
+            fillOpacity="0.15"
+            stroke="var(--color-primary)"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        )}
+
+        {/* Data points */}
+        {points.map((p, idx) => (
+          <g key={idx}>
+            <circle
+              cx={p.x}
+              cy={p.y}
+              r="4"
+              fill="var(--color-primary)"
+              stroke="var(--color-bg-base)"
+              strokeWidth="1.5"
+            />
+            <text
+              x={p.x}
+              y={p.y - 8}
+              textAnchor="middle"
+              fill="var(--color-success)"
+              fontSize="8"
+              fontWeight="bold"
+              fontFamily="var(--font-code)"
+            >
+              {p.score}%
+            </text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+};
+
+const ReportPage = ({ reportId = null, reportData = null, onBack, isEmbedded = false }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { id } = useParams();
 
-  const { report = null, topic = '', experienceLevel = '' } = location.state || {};
+  const { report: stateReport = null, topic: stateTopic = '', experienceLevel: stateLevel = '' } = location.state || {};
+
+  const [report, setReport] = useState(reportData || stateReport);
+  const [topic, setTopic] = useState(stateTopic);
+  const [experienceLevel, setExperienceLevel] = useState(stateLevel);
+
+  const effectiveId = reportId || id;
+
+  const [loading, setLoading] = useState(!reportData && !stateReport && !!effectiveId);
+  const [error, setError] = useState('');
   const [openAccordions, setOpenAccordions] = useState({});
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (!report) {
-      navigate('/setup');
+      if (effectiveId) {
+        setLoading(true);
+        getHistoryDetail(effectiveId)
+          .then((data) => {
+            setReport(data);
+            setTopic(data.topic);
+            setExperienceLevel(data.experienceLevel);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.error(err);
+            setError('Failed to load historical report. Please check your backend connection.');
+            setLoading(false);
+          });
+      } else {
+        if (!isEmbedded) {
+          navigate('/standard-practice');
+        }
+      }
     }
-  }, [report, navigate]);
+  }, [effectiveId, report, navigate, isEmbedded]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+  if (loading) {
+    return (
+      <div className={isEmbedded ? "w-full flex flex-col font-body p-6 space-y-8" : "bg-bg-base text-text-primary min-h-screen flex flex-col font-body p-6 space-y-8"}>
+        {/* Header Skeleton */}
+        <div className="glass-card rounded-xl p-6 md:p-8 space-y-4">
+          <Skeleton width="180px" height="24px" />
+          <Skeleton width="40%" height="16px" />
+          <Skeleton width="100%" height="60px" className="mt-4" />
+        </div>
+        
+        {/* Core Dimensions Skeleton */}
+        <div className="space-y-4">
+          <Skeleton width="140px" height="20px" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="glass-card rounded-xl p-5 flex flex-col items-center justify-center h-36">
+                <Skeleton width="60%" height="14px" className="mb-4" />
+                <Skeleton width="60px" height="60px" variant="circle" />
+              </div>
+            ))}
+          </div>
+        </div>
 
-  if (!report) return null;
+        {/* Strengths & Weaknesses Split Card Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="glass-card rounded-xl p-6 space-y-4 h-48">
+            <Skeleton width="100px" height="18px" />
+            <Skeleton width="90%" height="12px" />
+            <Skeleton width="80%" height="12px" />
+            <Skeleton width="70%" height="12px" />
+          </div>
+          <div className="glass-card rounded-xl p-6 space-y-4 h-48">
+            <Skeleton width="100px" height="18px" />
+            <Skeleton width="90%" height="12px" />
+            <Skeleton width="80%" height="12px" />
+            <Skeleton width="70%" height="12px" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (error || !report) {
+    return (
+      <div className={isEmbedded ? "w-full flex flex-col justify-center items-center font-body p-6 min-h-[400px]" : "bg-bg-base text-text-primary min-h-screen flex flex-col justify-center items-center font-body p-6"}>
+        <div className="bg-bg-card border border-border-muted p-8 rounded-xl max-w-md text-center shadow-lg">
+          <span className="material-symbols-outlined text-danger text-5xl mb-4">error</span>
+          <h2 className="text-xl font-bold mb-2">Report Load Error</h2>
+          <p className="text-text-secondary text-sm mb-6">{error || 'No report found.'}</p>
+          <button
+            onClick={() => {
+              if (onBack) onBack();
+              else navigate('/');
+            }}
+            className="bg-primary hover:bg-opacity-90 text-white font-bold py-2 px-6 rounded text-xs transition-all active:scale-95 duration-100"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const toggleAccordion = (id) => {
     setOpenAccordions({
@@ -45,35 +265,50 @@ const ReportPage = () => {
   ];
 
   return (
-    <div className="bg-bg-base text-text-primary min-h-screen flex flex-col font-body pb-12 relative">
+    <div className={isEmbedded ? "w-full flex flex-col font-body pb-12 relative" : "bg-bg-base text-text-primary min-h-screen flex flex-col font-body pb-12 relative"}>
       {/* Top Header */}
-      <header className="h-16 border-b border-border-muted bg-surface-container-low shrink-0 relative z-20 flex items-center w-full">
-        <div className="max-w-[1300px] w-full mx-auto px-4 md:px-6 flex justify-between items-center">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
-            <div className="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
-              <span className="material-symbols-outlined text-on-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>neurology</span>
+      {!isEmbedded && (
+        <header className="h-16 border-b border-border-muted bg-surface-container-low shrink-0 relative z-20 flex items-center w-full">
+          <div className="max-w-[1300px] w-full mx-auto px-4 md:px-6 flex justify-between items-center">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
+              <div className="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
+                <span className="material-symbols-outlined text-on-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>neurology</span>
+              </div>
+              <span className="font-headline-md text-xl font-extrabold text-primary tracking-tight">PrepIntAI</span>
             </div>
-            <span className="font-headline-md text-xl font-extrabold text-primary tracking-tight">PrepIntAI</span>
-          </div>
 
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/')}
-              className="bg-surface-variant hover:bg-outline-variant text-text-primary font-semibold text-xs py-2 px-4 rounded transition-all active:scale-95 duration-100 flex items-center gap-1.5"
-            >
-              <span className="material-symbols-outlined text-[16px]">home</span>
-              Home
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate('/')}
+                className="bg-surface-variant hover:bg-outline-variant text-text-primary font-semibold text-xs py-2 px-4 rounded transition-all active:scale-95 duration-100 flex items-center gap-1.5"
+              >
+                <span className="material-symbols-outlined text-[16px]">home</span>
+                Home
+              </button>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       {/* Background Grid Pattern */}
-      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to right, #30363D 1px, transparent 1px), linear-gradient(to bottom, #30363D 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.1 }}></div>
+      {!isEmbedded && (
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to right, #30363D 1px, transparent 1px), linear-gradient(to bottom, #30363D 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.1 }}></div>
+      )}
 
       {/* Combined Evaluation Report & Summary Card */}
-      <div className="max-w-[1300px] w-full mx-auto px-4 md:px-6 pt-8 pb-4 space-y-8 relative z-10">
-        <section className="bg-bg-card border border-border-muted rounded-xl p-6 md:p-8 shadow-md relative overflow-hidden animate-fadeIn">
+      <div className="max-w-[1300px] w-full mx-auto px-4 md:px-6 pt-4 pb-4 space-y-8 relative z-10">
+        {isEmbedded && (
+          <button
+            onClick={() => {
+              if (onBack) onBack();
+            }}
+            className="bg-surface-variant hover:bg-outline-variant text-text-primary font-semibold text-xs py-2 px-4 rounded transition-all active:scale-95 duration-100 flex items-center gap-1.5 self-start cursor-pointer border border-border-muted"
+          >
+            <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+            Back to History
+          </button>
+        )}
+        <section className="glass-card rounded-xl p-6 md:p-8 shadow-md relative overflow-hidden animate-fadeIn">
           {/* Background glow decoration */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-success opacity-5 blur-[100px] rounded-full pointer-events-none"></div>
           
@@ -126,45 +361,56 @@ const ReportPage = () => {
           </div>
         </section>
 
-        {/* Bento Grid: Sub-Metrics circular indicators */}
+        {/* Bento Grid: Sub-Metrics circular indicators & Radar Chart */}
         <section>
           <h2 className="font-headline-md text-lg font-bold text-on-surface mb-4">Core Dimensions</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {metrics.map((m) => (
-              <div key={m.name} className="bg-bg-card border border-border-muted rounded-xl p-5 flex flex-col items-center justify-center relative overflow-hidden group hover:border-outline transition-colors shadow-sm">
-                <h3 className="font-label-md text-xs font-semibold text-text-secondary mb-4 text-center">{m.name}</h3>
-                
-                {/* SVG Circular Progress Bar */}
-                <div className="relative w-24 h-24 flex items-center justify-center">
-                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                    <path
-                      className="text-border-muted"
-                      strokeWidth="3"
-                      stroke="currentColor"
-                      fill="none"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                    <path
-                      className={`${getScoreStrokeClass(m.score)} transition-all duration-1000 ease-out`}
-                      strokeDasharray={`${m.score}, 100`}
-                      strokeWidth="2.8"
-                      strokeLinecap="round"
-                      stroke="currentColor"
-                      fill="none"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                  </svg>
-                  <span className="absolute text-sm font-bold text-text-primary">{m.score}%</span>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            {/* Left Column: Circles */}
+            <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+              {metrics.map((m) => (
+                <div key={m.name} className="glass-card glass-card-hover rounded-xl p-5 flex flex-col items-center justify-center relative overflow-hidden group shadow-sm">
+                  <h3 className="font-label-md text-xs font-semibold text-text-secondary mb-4 text-center">{m.name}</h3>
+                  
+                  {/* SVG Circular Progress Bar */}
+                  <div className="relative w-24 h-24 flex items-center justify-center">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                      <path
+                        className="text-border-muted"
+                        strokeWidth="3"
+                        stroke="currentColor"
+                        fill="none"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                      <path
+                        className={`${getScoreStrokeClass(m.score)} transition-all duration-1000 ease-out`}
+                        strokeDasharray={`${m.score}, 100`}
+                        strokeWidth="2.8"
+                        strokeLinecap="round"
+                        stroke="currentColor"
+                        fill="none"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                    </svg>
+                    <span className="absolute text-sm font-bold text-text-primary">{m.score}%</span>
+                  </div>
                 </div>
+              ))}
+            </div>
+
+            {/* Right Column: Radar Chart */}
+            <div className="lg:col-span-4 glass-card rounded-xl p-5 flex flex-col items-center justify-center shadow-sm">
+              <h3 className="font-label-md text-xs font-semibold text-text-secondary mb-2 text-center uppercase tracking-wider">Skill Mapping</h3>
+              <div className="w-full h-44 flex items-center justify-center">
+                <RadarChart metrics={metrics} />
               </div>
-            ))}
+            </div>
           </div>
         </section>
 
         {/* Strengths & Weaknesses Split Card */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Strengths */}
-          <div className="bg-bg-card border border-border-muted rounded-xl p-6 shadow-sm">
+          <div className="glass-card rounded-xl p-6 shadow-sm">
             <h3 className="font-label-md text-sm font-bold text-success uppercase tracking-wider mb-4 flex items-center gap-2">
               <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>thumb_up</span>
               Key Strengths
@@ -180,7 +426,7 @@ const ReportPage = () => {
           </div>
 
           {/* Weaknesses & Improvements */}
-          <div className="bg-bg-card border border-border-muted rounded-xl p-6 shadow-sm">
+          <div className="glass-card rounded-xl p-6 shadow-sm">
             <h3 className="font-label-md text-sm font-bold text-warning uppercase tracking-wider mb-4 flex items-center gap-2">
               <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>lightbulb</span>
               Suggested Improvements
@@ -201,9 +447,9 @@ const ReportPage = () => {
           <h2 className="font-headline-md text-lg font-bold text-on-surface mb-4">Question-by-Question Analysis</h2>
           
           {report.evaluations?.map((item) => {
-            const isOpen = !!openAccordions[item.questionId];
+            const isOpen = openAccordions[item.questionId];
             return (
-              <div key={item.questionId} className="bg-bg-card border border-border-muted rounded-xl overflow-hidden shadow-sm hover:border-outline-variant transition-colors">
+              <div key={item.questionId} className="glass-card rounded-xl overflow-hidden border border-border-muted shadow-sm">
                 <button
                   onClick={() => toggleAccordion(item.questionId)}
                   className="w-full px-6 py-4 flex items-start justify-between text-left focus:outline-none"

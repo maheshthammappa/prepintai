@@ -17,7 +17,7 @@
   --color-on-tertiary-fixed-variant: #753400;
   --color-on-tertiary-fixed: #321300;
   --color-outline: #8b909f;
-  --color-primary: #2f81f7;
+  --color-primary: #acc7ff;
   --color-inverse-primary: #005bbf;
   --color-tertiary-container: #e47014;
   --color-surface-container: #1d2027;
@@ -65,6 +65,53 @@
   --font-display: "Geist", sans-serif;
   --font-body: "Inter", sans-serif;
   --font-code: "JetBrains Mono", monospace;
+
+  --font-body-sm: "Inter", sans-serif;
+  --font-label-md: "Inter", sans-serif;
+  --font-headline-md: "Geist", sans-serif;
+  --font-body-lg: "Inter", sans-serif;
+  --font-display-lg: "Geist", sans-serif;
+  --font-headline-lg: "Geist", sans-serif;
+  --font-code-md: "JetBrains Mono", monospace;
+  --font-body-md: "Inter", sans-serif;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-body-sm--font-weight: 400;
+
+  --text-label-md: 12px;
+  --text-label-md--line-height: 16px;
+  --text-label-md--font-weight: 600;
+
+  --text-headline-md: 24px;
+  --text-headline-md--line-height: 32px;
+  --text-headline-md--font-weight: 600;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 28px;
+  --text-body-lg--font-weight: 400;
+
+  --text-display-lg: 48px;
+  --text-display-lg--line-height: 56px;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 700;
+
+  --text-headline-lg: 32px;
+  --text-headline-lg--line-height: 40px;
+  --text-headline-lg--font-weight: 600;
+
+  --text-code-md: 14px;
+  --text-code-md--line-height: 20px;
+  --text-code-md--font-weight: 400;
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 24px;
+  --text-body-md--font-weight: 400;
+
+  --spacing-card-padding: 20px;
+  --spacing-container-margin: 24px;
+  --spacing-base: 4px;
+  --spacing-gutter: 16px;
 }
 
 body {
@@ -112,4 +159,43 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
   appearance: textfield;
+}
+
+/* Shimmer Animation for Skeleton Loaders */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.08) 37%,
+    rgba(255, 255, 255, 0.03) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Glassmorphism Card Style */
+.glass-card {
+  background: rgba(28, 33, 40, 0.45) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(48, 54, 61, 0.4) !important;
+}
+
+.glass-card-hover {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.glass-card-hover:hover {
+  transform: translateY(-2px) scale(1.015);
+  background: rgba(28, 33, 40, 0.6) !important;
+  border-color: rgba(172, 199, 255, 0.3) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(172, 199, 255, 0.05);
 }
