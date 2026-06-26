@@ -1,3 +1,15 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// pages/SignupPage.jsx — REGISTRATION FORM PAGE
+//
+// This is a PUBLIC PAGE — no auth required. Anyone can visit /signup.
+//
+// What it does:
+//   1. Renders a username + email + password form
+//   2. On submit → calls registerApi() in services/api.js (POST /api/auth/register)
+//   3. Backend creates the user account and returns a JWT token
+//   4. Calls AuthContext.login(token, user) to log the user in immediately
+//   5. Navigates to /dashboard (user lands directly in the app after signup)
+// ─────────────────────────────────────────────────────────────────────────────
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';

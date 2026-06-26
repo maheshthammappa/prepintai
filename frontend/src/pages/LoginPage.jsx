@@ -1,3 +1,18 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// pages/LoginPage.jsx — LOGIN FORM PAGE
+//
+// This is a PUBLIC PAGE — no auth required. Anyone can visit /login.
+//
+// What it does:
+//   1. Renders a username + password form
+//   2. On submit → calls loginApi() in services/api.js (POST /api/auth/login)
+//   3. Backend returns a JWT token + user object
+//   4. Calls AuthContext.login(token, user) to save the session globally
+//   5. Navigates to /dashboard
+//
+// If the user is already logged in, they can still visit this page
+// (no automatic redirect away — that could be a future improvement).
+// ─────────────────────────────────────────────────────────────────────────────
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';

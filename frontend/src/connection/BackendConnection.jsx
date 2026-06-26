@@ -1,3 +1,13 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// connection/BackendConnection.jsx — DEV/DEBUG UTILITY (not part of main app)
+//
+// This page exists ONLY to verify that the Spring Boot backend server is
+// running and reachable from the frontend. It hits /backend-connection and
+// displays either a success message or "Backend Connection Failed".
+//
+// Accessible at: /backend-connection
+// NOT linked from any navigation — only used manually during development.
+// ─────────────────────────────────────────────────────────────────────────────
 import { useEffect, useState } from "react";
 import api from "../services/api";
 

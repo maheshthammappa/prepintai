@@ -1,3 +1,13 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// connection/DatabaseConnection.jsx — DEV/DEBUG UTILITY (not part of main app)
+//
+// This page exists ONLY to verify that the database connection is working.
+// It hits /database-connection (a backend endpoint that tests DB connectivity)
+// and displays either a success message or "Database Connection Failed".
+//
+// Accessible at: /database-connection
+// NOT linked from any navigation — only used manually during development.
+// ─────────────────────────────────────────────────────────────────────────────
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
