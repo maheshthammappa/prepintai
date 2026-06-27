@@ -38,6 +38,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(columnDefinition = "TEXT")
+    private String bio;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 

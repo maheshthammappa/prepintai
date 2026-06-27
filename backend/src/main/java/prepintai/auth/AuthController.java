@@ -16,6 +16,7 @@ package prepintai.auth;
 import prepintai.auth.dto.AuthResponse;
 import prepintai.auth.dto.LoginRequest;
 import prepintai.auth.dto.RegisterRequest;
+import prepintai.auth.dto.UpdateProfileRequest;
 import prepintai.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -111,7 +112,62 @@ public class AuthController {
         return ResponseEntity.ok(Map.of(
                 "username", user.getUsername(),
                 "email", user.getEmail(),
+                "bio", user.getBio() != null ? user.getBio() : "",
                 "createdAt", user.getCreatedAt()
+        ));
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateProfile(@RequestBody UpdateProfileRequest updateRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(401).body(Map.of("message", "Unauthorized"));
+        }
+
+        org.springframework.security.core.userdetails.User principal = 
+                (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        
+        User user = userRepository.findByUsername(principal.getUsername())
+                .orElseThrow(() -> new RuntimeException("Error: User not found."));
+
+        if (updateRequest.username() != null && !updateRequest.username().trim().isEmpty() 
+            && !updateRequest.username().equals(user.getUsername())) {
+            if (updateRequest.username().trim().length() < 4) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Username must be at least 4 characters!"));
+            }
+            if (userRepository.existsByUsername(updateRequest.username())) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Username is already taken!"));
+            }
+            user.setUsername(updateRequest.username().trim());
+        }
+
+        if (updateRequest.email() != null && !updateRequest.email().trim().isEmpty()
+            && !updateRequest.email().equals(user.getEmail())) {
+            if (!updateRequest.email().contains("@")) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Invalid email address!"));
+            }
+            if (userRepository.existsByEmail(updateRequest.email())) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Email is already in use!"));
+            }
+            user.setEmail(updateRequest.email().trim());
+        }
+
+        if (updateRequest.bio() != null) {
+            user.setBio(updateRequest.bio().trim());
+        }
+
+        userRepository.save(user);
+
+        // Generate a new token since username might have changed
+        String newToken = jwtUtils.generateToken(user.getUsername());
+        
+        return ResponseEntity.ok(Map.of(
+                "token", newToken,
+                "username", user.getUsername(),
+                "email", user.getEmail(),
+                "bio", user.getBio() != null ? user.getBio() : "",
+                "createdAt", user.getCreatedAt(),
+                "message", "Profile updated successfully!"
         ));
     }
 }

@@ -39,17 +39,18 @@ const HomePage = () => {
     : 0;
 
   return (
-    <div className="bg-bg-base text-text-primary min-h-screen w-full flex flex-col justify-between p-4 md:p-6 relative font-body overflow-x-hidden">
-      {/* Background Grid Pattern */}
-      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to right, #30363D 1px, transparent 1px), linear-gradient(to bottom, #30363D 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.1 }}></div>
+    <div className="text-text-primary min-h-screen w-full flex flex-col justify-between p-4 md:p-6 relative font-body overflow-x-hidden bg-transparent">
       
       {/* Top Header */}
       <header className="max-w-6xl w-full mx-auto flex justify-between items-center h-16 relative z-10 shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
-            <span className="material-symbols-outlined text-on-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>neurology</span>
-          </div>
-          <span className="font-headline-md text-xl font-extrabold text-primary tracking-tight">PrepIntAI</span>
+        <div className="flex items-center gap-1.5">
+          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>terminal</span>
+          <span 
+            className="font-headline-md text-headline-md font-bold text-primary flex items-center gap-1.5 cursor-pointer" 
+            onClick={() => handleViewChange('/')}
+          >
+            PREPINTAI
+          </span>
         </div>
       </header>
 
@@ -70,14 +71,14 @@ const HomePage = () => {
           <div className="flex items-center gap-4 pt-2">
             <button
               onClick={() => navigate('/dashboard')}
-              className="bg-primary hover:bg-primary/95 text-white font-bold text-sm h-11 w-48 rounded flex items-center justify-center gap-2 shadow-lg hover:shadow-primary/10 transition-all active:scale-95 duration-100 cursor-pointer"
+              className="bg-primary text-on-primary font-bold py-2.5 px-5 h-11 w-48 rounded-md shadow-md hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
             >
               Start Practicing
               <span className="material-symbols-outlined text-sm leading-none" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
             </button>
             <button
               onClick={() => window.open('https://github.com', '_blank')}
-              className="border border-border-muted hover:bg-surface-variant text-text-primary font-semibold text-sm h-11 w-48 rounded flex items-center justify-center transition-all active:scale-95 duration-100 cursor-pointer"
+              className="bg-surface-variant text-text-primary border border-border-muted font-semibold py-2.5 px-5 h-11 w-48 rounded-md hover:bg-outline-variant active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
             >
               View on GitHub
             </button>

@@ -37,6 +37,16 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
   }, []);
 
+  const updateSession = useCallback((newToken, userData) => {
+    if (newToken) {
+      setToken(newToken);
+      localStorage.setItem('token', newToken);
+    }
+    if (userData) {
+      setUser(userData);
+    }
+  }, []);
+
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (token) {
@@ -72,7 +82,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     // Provide the auth values to all child components
-    <AuthContext.Provider value={{ user, token, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, logout, updateSession }}>
       {children}
     </AuthContext.Provider>
   );

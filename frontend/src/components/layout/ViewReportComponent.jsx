@@ -251,7 +251,7 @@ const ViewReportComponent = ({ reportId = null, reportData = null, onBack, isEmb
               if (onBack) onBack();
               else navigate('/');
             }}
-            className="bg-primary hover:bg-opacity-90 text-white font-bold py-2 px-6 rounded text-xs transition-all active:scale-95 duration-100"
+            className="bg-primary text-on-primary font-bold py-2 px-5 rounded-md shadow-md hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             Go Back
           </button>
@@ -304,7 +304,7 @@ const ViewReportComponent = ({ reportId = null, reportData = null, onBack, isEmb
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate('/')}
-                className="bg-surface-variant hover:bg-outline-variant text-text-primary font-semibold text-xs py-2 px-4 rounded transition-all active:scale-95 duration-100 flex items-center gap-1.5"
+                className="bg-surface-variant text-text-primary border border-border-muted font-semibold py-2 px-4 rounded-md hover:bg-outline-variant active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[16px]">home</span>
                 Home
@@ -326,7 +326,7 @@ const ViewReportComponent = ({ reportId = null, reportData = null, onBack, isEmb
             onClick={() => {
               if (onBack) onBack();
             }}
-            className="bg-surface-variant hover:bg-outline-variant text-text-primary font-semibold text-xs py-2 px-4 rounded transition-all active:scale-95 duration-100 flex items-center gap-1.5 self-start cursor-pointer border border-border-muted"
+            className="bg-surface-variant text-text-primary border border-border-muted font-semibold py-2 px-4 rounded-md hover:bg-outline-variant active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer self-start"
           >
             <span className="material-symbols-outlined text-[16px]">arrow_back</span>
             Back to History

@@ -98,7 +98,7 @@ const StandardInterviewComponent = ({ onStartInterview, onCancel, isEmbedded = f
               <div className="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
                 <span className="material-symbols-outlined text-on-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>neurology</span>
               </div>
-              <span className="font-headline-md text-xl font-extrabold text-primary tracking-tight">PrepIntAI</span>
+              <span className="font-headline-md text-xl font-extrabold text-primary tracking-tight">PREPINTAI</span>
             </div>
 
             <div className="flex items-center gap-4">
@@ -119,13 +119,13 @@ const StandardInterviewComponent = ({ onStartInterview, onCancel, isEmbedded = f
         <div className="w-full max-w-4xl relative z-10 my-auto mx-auto">
           {loading ? (
             <div className="bg-bg-card border border-border-muted rounded-xl p-12 shadow-[0_0_40px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center space-y-6">
-              <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-              <h2 className="font-headline-md text-2xl font-bold text-center text-primary">Generating Interview Questions</h2>
+              <div className="w-16 h-16 border-4 border-success border-t-transparent rounded-full animate-spin"></div>
+              <h2 className="font-headline-md text-2xl font-bold text-center text-success">Generating Interview Questions</h2>
               <p className="text-text-secondary text-center text-sm max-w-md">Our AI is designing a customized set of {questionCount} questions for {topic === 'custom' ? customTopic : topic} ({experienceLevel}). This will take just a moment...</p>
             </div>
           ) : (
-            <div className="bg-bg-card border border-border-muted rounded-xl p-6 md:p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
-              <div className="mb-6 border-b border-border-muted pb-5">
+            <div className="bg-bg-card border border-border-muted rounded-xl p-6 md:p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] min-h-[600px] flex flex-col">
+              <div className="mb-6 border-b border-border-muted pb-5 shrink-0">
                 <h1 className="font-headline-lg text-3xl font-bold text-text-primary mb-2 flex items-center gap-2">
                   <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>neurology</span>
                   Configure Interview Session
@@ -134,14 +134,15 @@ const StandardInterviewComponent = ({ onStartInterview, onCancel, isEmbedded = f
               </div>
 
               {error && (
-                <div className="bg-danger/10 border border-danger/30 text-danger p-4 rounded mb-6 text-sm flex items-center gap-2">
+                <div className="bg-danger/10 border border-danger/30 text-danger p-4 rounded mb-6 text-sm flex items-center gap-2 shrink-0">
                   <span className="material-symbols-outlined">error</span>
                   {error}
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* 1. Topic Selection Grid */}
+              <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
+                <div className="space-y-6 flex-1">
+                  {/* 1. Topic Selection Grid */}
                 <div>
                   <label className="block font-label-md text-sm font-semibold text-on-surface mb-3">Select Topic / Technology</label>
                   <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
@@ -197,7 +198,7 @@ const StandardInterviewComponent = ({ onStartInterview, onCancel, isEmbedded = f
                       value={customTopic}
                       onChange={(e) => setCustomTopic(e.target.value)}
                       placeholder="e.g. Spring Boot Microservices, Node.js, HR Behavioural"
-                      className="w-full bg-surface-variant border border-border-muted rounded py-2.5 px-4 font-body-md text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                      className="w-full bg-bg-base border border-border-muted text-on-surface text-sm rounded-md py-2.5 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                       required
                     />
                   </div>
@@ -266,22 +267,22 @@ const StandardInterviewComponent = ({ onStartInterview, onCancel, isEmbedded = f
                     ))}
                   </div>
                 </div>
-
+                </div>
                 {/* Action Buttons */}
-                <div className="pt-6 flex gap-4 border-t border-border-muted w-full">
+                <div className="pt-6 flex gap-4 border-t border-border-muted w-full mt-6 shrink-0">
                   <button
                     type="button"
                     onClick={() => {
                       if (onCancel) onCancel();
                       else navigate('/');
                     }}
-                    className="flex-1 py-2.5 border border-border-muted rounded text-text-primary font-semibold text-sm hover:bg-surface-variant transition-colors text-center"
+                    className="flex-1 bg-surface-variant text-text-primary border border-border-muted font-semibold py-2.5 px-5 rounded-md hover:bg-outline-variant active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-2.5 bg-primary-container text-on-primary-container rounded font-semibold text-sm hover:bg-primary transition-colors flex items-center justify-center gap-2 shadow-lg"
+                    className="flex-1 bg-primary text-on-primary font-bold py-2.5 px-5 rounded-md shadow-md hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     Start AI Interview
                     <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>arrow_forward</span>

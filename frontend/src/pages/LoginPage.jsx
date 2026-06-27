@@ -50,7 +50,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="bg-background text-on-surface font-body-md h-screen w-full flex items-center justify-center p-container-margin relative overflow-hidden">
+    <div className="text-on-surface font-body-md h-screen w-full flex items-center justify-center p-container-margin relative overflow-hidden bg-transparent">
       {/* Decorative background blur */}
       <div className="absolute -right-24 -top-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute -left-24 -bottom-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -78,7 +78,7 @@ const LoginPage = () => {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-background border border-border-muted text-on-surface font-body-sm text-body-sm rounded-md py-2 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
+              className="w-full bg-bg-base border border-border-muted text-on-surface text-sm rounded-md py-2.5 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
               placeholder="Enter your username"
               required
             />
@@ -90,7 +90,7 @@ const LoginPage = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-background border border-border-muted text-on-surface font-body-sm text-body-sm rounded-md py-2 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
+              className="w-full bg-bg-base border border-border-muted text-on-surface text-sm rounded-md py-2.5 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
               placeholder="••••••••"
               required
             />
@@ -99,7 +99,7 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary-container text-on-primary-container font-label-md text-label-md py-2.5 rounded flex justify-center items-center gap-2 hover:bg-surface-variant transition-colors border border-border-muted font-bold cursor-pointer mt-6"
+            className="w-full bg-primary text-on-primary font-bold py-2.5 px-5 rounded-md shadow-md hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer mt-6"
           >
             {loading ? (
               <div className="w-5 h-5 border-2 border-on-primary-container border-t-transparent rounded-full animate-spin"></div>

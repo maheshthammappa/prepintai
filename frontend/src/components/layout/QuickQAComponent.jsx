@@ -10,7 +10,9 @@ const QuickQAComponent = () => {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -19,6 +21,49 @@ const QuickQAComponent = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, loading]);
+
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const rec = new SpeechRecognition();
+      rec.continuous = true;
+      rec.interimResults = false;
+      rec.lang = 'en-US';
+
+      rec.onresult = (event) => {
+        const transcript = event.results[event.results.length - 1][0].transcript;
+        setInput((prev) => {
+          const currentText = prev || '';
+          return currentText ? `${currentText} ${transcript}` : transcript;
+        });
+      };
+
+      rec.onend = () => {
+        setIsRecording(false);
+      };
+
+      rec.onerror = (e) => {
+        console.error('Speech recognition error: ', e);
+        setIsRecording(false);
+      };
+
+      recognitionRef.current = rec;
+    }
+  }, []);
+
+  const toggleRecording = () => {
+    if (!recognitionRef.current) {
+      alert('Speech Recognition is not supported by your current browser. Please use Google Chrome or Microsoft Edge.');
+      return;
+    }
+
+    if (isRecording) {
+      recognitionRef.current.stop();
+    } else {
+      setIsRecording(true);
+      recognitionRef.current.start();
+    }
+  };
 
   const handleSend = async () => {
     if (!input.trim() || loading) return;
@@ -112,18 +157,30 @@ const QuickQAComponent = () => {
         {/* Input Area */}
         <div className="p-4 bg-surface-container-low border-t border-border-muted shrink-0">
           <div className="flex items-end gap-3 max-w-4xl mx-auto">
+            <button
+              onClick={toggleRecording}
+              disabled={loading}
+              className={`p-3 rounded-xl transition-all cursor-pointer flex items-center justify-center shrink-0 ${
+                isRecording 
+                  ? 'bg-danger hover:bg-danger/90 text-white animate-pulse' 
+                  : 'bg-surface-variant text-text-secondary hover:text-on-surface disabled:opacity-50 disabled:cursor-not-allowed'
+              }`}
+              title={isRecording ? "Stop Dictating" : "Start Dictating"}
+            >
+              <span className="material-symbols-outlined">{isRecording ? 'stop' : 'mic'}</span>
+            </button>
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask anything about code, concepts, or interview prep..."
-              className="flex-1 bg-surface-variant text-on-surface border border-border-muted focus:border-primary focus:ring-1 focus:ring-primary outline-none rounded-xl py-3 px-4 resize-none min-h-[52px] max-h-[150px] custom-scrollbar text-sm"
+              className="flex-1 bg-bg-base text-on-surface border border-border-muted focus:border-primary focus:ring-1 focus:ring-primary outline-none rounded-xl py-3 px-4 resize-none min-h-[52px] max-h-[150px] custom-scrollbar text-sm transition-all"
               rows={input.split('\n').length > 1 ? Math.min(input.split('\n').length, 5) : 1}
             />
             <button
               onClick={handleSend}
               disabled={!input.trim() || loading}
-              className="bg-primary hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-on-primary p-3 rounded-xl transition-all cursor-pointer flex items-center justify-center shrink-0"
+              className="bg-primary text-on-primary font-bold p-3 rounded-xl shadow-md hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0 cursor-pointer"
             >
               <span className="material-symbols-outlined">send</span>
             </button>

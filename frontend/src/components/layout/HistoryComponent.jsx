@@ -36,7 +36,7 @@ const HistoryComponent = ({ history, loading, onViewChange }) => {
           </p>
           <button
             onClick={() => onViewChange('/standard-practice')}
-            className="bg-primary text-white font-bold py-2 px-6 rounded text-xs hover:bg-opacity-90 transition-all cursor-pointer border border-border-muted"
+            className="bg-primary text-on-primary font-bold py-2 px-5 rounded-md shadow-md hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             Start First Interview
           </button>
@@ -78,7 +78,7 @@ const HistoryComponent = ({ history, loading, onViewChange }) => {
                       <td className="py-4 px-6 text-right">
                         <button
                           onClick={() => onViewChange('/report/' + session.id)}
-                          className="text-primary hover:underline font-bold text-xs inline-flex items-center gap-0.5 cursor-pointer border border-primary/20 hover:border-primary/50 py-1 px-3 rounded hover:bg-primary/5 transition-all"
+                          className="bg-surface-variant text-text-primary border border-border-muted font-semibold py-1.5 px-3 rounded-md hover:bg-outline-variant active:scale-95 transition-all inline-flex items-center gap-1 cursor-pointer text-xs"
                         >
                           View Report
                           <span className="material-symbols-outlined text-sm">chevron_right</span>

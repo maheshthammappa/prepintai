@@ -17,7 +17,7 @@
   --color-on-tertiary-fixed-variant: #753400;
   --color-on-tertiary-fixed: #321300;
   --color-outline: #8b909f;
-  --color-primary: #acc7ff;
+  --color-primary: #0066FF;
   --color-inverse-primary: #005bbf;
   --color-tertiary-container: #e47014;
   --color-surface-container: #1d2027;
@@ -28,7 +28,7 @@
   --color-surface-container-highest: #32353c;
   --color-text-secondary: #8B949E;
   --color-bg-base: #0D1117;
-  --color-on-primary: #002f68;
+  --color-on-primary: #ffffff;
   --color-on-background: #e0e2ec;
   --color-surface-bright: #363941;
   --color-success: #238636;
@@ -116,6 +116,11 @@
 
 body {
   background-color: var(--color-bg-base);
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: center top;
   color: var(--color-text-primary);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;

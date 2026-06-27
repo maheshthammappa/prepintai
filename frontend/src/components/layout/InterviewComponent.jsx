@@ -284,7 +284,7 @@ const InterviewComponent = ({
                       if (onExit) onExit();
                       else navigate('/standard-practice');
                     }}
-                    className="bg-surface-variant hover:bg-outline-variant text-text-primary font-semibold text-xs py-2 px-4 rounded transition-all active:scale-95 duration-100 flex items-center gap-1.5"
+                    className="bg-surface-variant text-text-primary border border-border-muted font-semibold py-2 px-4 rounded-md hover:bg-outline-variant active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[16px]">logout</span>
                     Exit Session
@@ -458,7 +458,7 @@ const InterviewComponent = ({
                     type="button"
                     onClick={handlePrevious}
                     disabled={currentIndex === 0}
-                    className="flex items-center gap-1 text-text-secondary hover:text-on-surface disabled:opacity-30 disabled:hover:text-text-secondary font-semibold text-[11px] md:text-xs py-1.5 px-2.5 md:py-2 md:px-3 rounded hover:bg-surface-variant transition-colors"
+                    className="text-text-secondary hover:text-primary hover:bg-primary/10 rounded-md py-2 px-3 font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <span className="material-symbols-outlined text-sm">chevron_left</span>
                     Previous
@@ -470,7 +470,7 @@ const InterviewComponent = ({
                   <button
                     type="button"
                     onClick={handleSkip}
-                    className="text-text-secondary hover:text-on-surface font-semibold text-[11px] md:text-xs px-3.5 py-1.5 md:px-4 md:py-2 rounded border border-border-muted hover:bg-surface-variant transition-colors"
+                    className="bg-surface-variant text-text-primary border border-border-muted font-semibold py-2 px-4 rounded-md hover:bg-outline-variant active:scale-95 transition-all flex items-center justify-center cursor-pointer"
                   >
                     Skip
                   </button>
@@ -478,7 +478,7 @@ const InterviewComponent = ({
                     <button
                       type="button"
                       onClick={handleNext}
-                      className="bg-primary text-white font-semibold text-[11px] md:text-xs px-4 py-1.5 md:px-5 md:py-2 rounded flex items-center gap-1 hover:bg-opacity-90 active:scale-95 duration-100"
+                      className="bg-primary text-on-primary font-bold py-2 px-5 rounded-md shadow-md hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer"
                     >
                       Next Question
                       <span className="material-symbols-outlined text-sm">chevron_right</span>
@@ -487,7 +487,7 @@ const InterviewComponent = ({
                     <button
                       type="button"
                       onClick={handleSubmitInterview}
-                      className="bg-success text-white font-semibold text-[11px] md:text-xs px-5 py-1.5 md:px-6 md:py-2 rounded flex items-center gap-1 hover:bg-opacity-90 active:scale-95 duration-100 shadow-md"
+                      className="bg-success text-white font-bold py-2 px-5 rounded-md shadow-md hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer"
                     >
                       Submit Interview
                       <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>

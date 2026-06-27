@@ -81,6 +81,7 @@ const DashboardPage = () => {
 
   // Start Session Selection Dialog
   const [isStartModalOpen, setIsStartModalOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
   // Resume Upload State Variables
   const [resumeFile, setResumeFile] = useState(null);
@@ -334,7 +335,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="bg-background text-on-surface font-body-md h-screen w-full flex flex-col overflow-hidden relative">
+    <div className="text-on-surface font-body-md h-screen w-full flex flex-col overflow-hidden relative bg-transparent">
       
       {/* Heatmap cell CSS — used by DashboardComponent */}
       <style>{`
@@ -353,13 +354,13 @@ const DashboardPage = () => {
 
       {/* ── FIXED TopNavBar Header ────────────────────────────────────────── */}
       <header className="bg-background border-b border-border-muted h-16 flex justify-between items-center px-gutter fixed top-0 left-0 right-0 z-30 w-full shrink-0">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5">
+          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>terminal</span>
           <span 
             className="font-headline-md text-headline-md font-bold text-primary flex items-center gap-1.5 cursor-pointer" 
             onClick={() => handleViewChange('/dashboard')}
           >
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>terminal</span>
-            PrepIntAI
+            PREPINTAI
           </span>
         </div>
 
@@ -367,21 +368,62 @@ const DashboardPage = () => {
         <div className="hidden md:flex flex-1 max-w-md mx-8 relative">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-sm">search</span>
           <input
-            className="w-full bg-bg-card border border-border-muted text-on-surface font-body-sm text-body-sm rounded-md py-1.5 pl-9 pr-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
+            className="w-full bg-bg-base border border-border-muted text-on-surface text-sm rounded-md py-1.5 pl-9 pr-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
             placeholder="Search questions, topics..."
             type="text"
             disabled
           />
         </div>
 
-        <div className="flex items-center gap-4">
-          <button className="text-text-secondary hover:text-on-surface transition-colors p-1 relative">
-            <span className="material-symbols-outlined">notifications</span>
-            {hasRealHistory && <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>}
+        <div className="flex items-center gap-4 relative">
+          <button 
+            onClick={() => navigate('/')}
+            className="h-10 w-10 rounded-md border border-border-muted hover:border-primary bg-surface-container-high flex items-center justify-center font-bold text-sm text-text-secondary hover:text-primary transition-all shadow-sm hover:shadow active:scale-95 cursor-pointer" 
+            title="Go Home"
+          >
+            <span className="material-symbols-outlined text-[20px]">home</span>
           </button>
-          <div className="h-8 w-8 rounded-full border border-border-muted overflow-hidden flex-shrink-0 cursor-pointer bg-primary/10 flex items-center justify-center font-bold text-xs text-primary" title={user?.email || ''}>
+
+          <button 
+            onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+            className="h-10 w-10 rounded-md border border-border-muted hover:border-primary overflow-hidden flex-shrink-0 cursor-pointer bg-surface-container-high flex items-center justify-center font-bold text-sm text-primary transition-all shadow-sm hover:shadow active:scale-95" 
+            title="Profile Menu"
+          >
             {user?.username ? user.username.charAt(0).toUpperCase() : 'M'}
-          </div>
+          </button>
+
+          {/* Profile Dropdown */}
+          {isProfileDropdownOpen && (
+            <>
+              <div 
+                className="fixed inset-0 z-40"
+                onClick={() => setIsProfileDropdownOpen(false)}
+              ></div>
+              <div className="absolute top-12 right-0 w-48 bg-bg-card border border-border-muted rounded-md shadow-lg z-50 overflow-hidden py-1 animate-fadeIn">
+                <button
+                  onClick={() => {
+                    setIsProfileDropdownOpen(false);
+                    handleViewChange('/profile');
+                  }}
+                  className="w-full text-left px-4 py-2.5 text-sm text-text-primary hover:bg-surface-variant transition-colors flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[18px]">person</span>
+                  My Profile
+                </button>
+                <button
+                  onClick={() => {
+                    setIsProfileDropdownOpen(false);
+                    logout();
+                    navigate('/login');
+                  }}
+                  className="w-full text-left px-4 py-2.5 text-sm text-danger hover:bg-danger/10 transition-colors flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[18px]">logout</span>
+                  Sign Out
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </header>
 
@@ -487,18 +529,7 @@ const DashboardPage = () => {
             </button>
           </div>
 
-          <div className="mt-auto px-3 pb-2 pt-4">
-            <button
-              onClick={() => {
-                logout();
-                navigate('/');
-              }}
-              className=" text-text-secondary bg-danger/10 px-3 py-2.5 flex items-center gap-3 rounded-lg transition-all duration-200 font-label-md text-sm text-left w-full cursor-pointer border border-transparent hover:border-danger/20"
-            >
-              <span className="material-symbols-outlined text-[18px]">logout</span>
-              Sign Out
-            </button>
-          </div>
+
         </nav>
 
         {/* Floating Sidebar Toggle Handle */}
@@ -705,7 +736,7 @@ const DashboardPage = () => {
 
             <button
               onClick={() => setIsStartModalOpen(false)}
-              className="mt-5 w-full py-2 bg-surface-variant hover:bg-surface-container-highest text-on-surface rounded-lg font-label-md text-label-md transition-colors cursor-pointer border border-border-muted"
+              className="w-full bg-surface-variant text-text-primary border border-border-muted font-semibold py-2 px-5 rounded-md hover:bg-outline-variant active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer mt-5"
             >
               Cancel
             </button>

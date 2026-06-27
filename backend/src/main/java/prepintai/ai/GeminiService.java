@@ -77,11 +77,11 @@ public class GeminiService {
             "You are an expert technical interviewer.\n" +
             "Generate exactly %d interview questions for the topic: \"%s\" and experience level: \"%s\".\n" +
             "The questions should cover deep conceptual, syntactical, framework design, performance tuning, and architectural scenarios.\n" +
-"Each question must be concise, professional, and interview-ready.\n" +
-"Keep each question should contain maximum 30 words and 3 sentences .\n" +
-"Never exceed 40 words.\n" +
-"Do not include explanations, hints, examples, expected answers, follow-up questions, or background context.\n" +
-"Write questions exactly as a real interviewer would ask them.\n" +
+            "Each question must be concise, professional, and interview-ready.\n" +
+            "Keep each question should contain maximum 30 words and 3 sentences .\n" +
+            "Never exceed 40 words.\n" +
+            "Do not include explanations, hints, examples, expected answers, follow-up questions, or background context.\n" +
+            "Write questions exactly as a real interviewer would ask them.\n" +
             "You must return the response strictly as a JSON object matching this schema:\n" +
             "{\n" +
             "  \"topic\": \"topic name\",\n" +

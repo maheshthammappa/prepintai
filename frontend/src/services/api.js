@@ -137,5 +137,10 @@ export const getMe = async () => {
   return response.data;
 };
 
+export const updateProfile = async (profileData) => {
+  const response = await apiClient.put('/api/auth/profile', profileData);
+  return response.data;
+};
+
 // Export the raw client as default so components can use it for one-off requests
 export default apiClient;
