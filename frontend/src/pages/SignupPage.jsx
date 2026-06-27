@@ -25,6 +25,48 @@ const SignupPage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({ username: '', password: '', confirmPassword: '' });
+
+  const handleUsernameChange = (e) => {
+    const val = e.target.value;
+    setUsername(val);
+    if (val.trim().length > 0 && val.trim().length < 8) {
+      setFieldErrors(prev => ({ ...prev, username: 'Username must be at least 8 characters.' }));
+    } else {
+      setFieldErrors(prev => ({ ...prev, username: '' }));
+    }
+  };
+
+  const validatePassword = (pass) => {
+    if (!pass) return '';
+    if (pass.length < 8) return 'Password must be at least 8 characters.';
+    if (!/[A-Z]/.test(pass)) return 'Password must contain at least one uppercase letter.';
+    if (!/[a-z]/.test(pass)) return 'Password must contain at least one lowercase letter.';
+    if (!/[0-9]/.test(pass)) return 'Password must contain at least one number.';
+    if (!/[^A-Za-z0-9]/.test(pass)) return 'Password must contain at least one special character.';
+    return '';
+  };
+
+  const handlePasswordChange = (e) => {
+    const val = e.target.value;
+    setPassword(val);
+    setFieldErrors(prev => ({ ...prev, password: validatePassword(val) }));
+    if (confirmPassword && val !== confirmPassword) {
+      setFieldErrors(prev => ({ ...prev, confirmPassword: 'Passwords do not match.' }));
+    } else if (confirmPassword) {
+      setFieldErrors(prev => ({ ...prev, confirmPassword: '' }));
+    }
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    const val = e.target.value;
+    setConfirmPassword(val);
+    if (val && val !== password) {
+      setFieldErrors(prev => ({ ...prev, confirmPassword: 'Passwords do not match.' }));
+    } else {
+      setFieldErrors(prev => ({ ...prev, confirmPassword: '' }));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,13 +75,14 @@ const SignupPage = () => {
       return;
     }
 
-    if (username.trim().length < 4) {
-      setError('Username must be at least 4 characters.');
+    if (username.trim().length < 8) {
+      setError('Username must be at least 8 characters.');
       return;
     }
 
-    if (password.trim().length < 6) {
-      setError('Password must be at least 6 characters.');
+    const passError = validatePassword(password);
+    if (passError) {
+      setError(passError);
       return;
     }
 
@@ -65,6 +108,15 @@ const SignupPage = () => {
 
   return (
     <div className="text-on-surface font-body-md h-screen w-full flex items-center justify-center p-container-margin relative overflow-hidden bg-transparent">
+      {/* Back to Home Button */}
+      <button 
+        onClick={() => navigate('/')}
+        className="absolute top-6 left-6 flex items-center gap-1.5 text-text-secondary hover:text-primary font-semibold text-sm transition-colors z-20"
+      >
+        <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+        Back to Home
+      </button>
+
       {/* Decorative background blur */}
       <div className="absolute -right-24 -top-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute -left-24 -bottom-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -91,11 +143,12 @@ const SignupPage = () => {
             <input
               type="text"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-bg-base border border-border-muted text-on-surface text-sm rounded-md py-2.5 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-              placeholder="Min 4 characters"
+              onChange={handleUsernameChange}
+              className={`w-full bg-bg-base border ${fieldErrors.username ? 'border-danger focus:border-danger focus:ring-danger' : 'border-border-muted focus:border-primary focus:ring-primary'} text-on-surface text-sm rounded-md py-2.5 px-3 focus:outline-none focus:ring-1 transition-all`}
+              placeholder="Min 8 characters"
               required
             />
+            {fieldErrors.username && <p className="text-danger text-xs mt-1.5">{fieldErrors.username}</p>}
           </div>
 
           <div>
@@ -116,11 +169,12 @@ const SignupPage = () => {
               <input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-bg-base border border-border-muted text-on-surface text-sm rounded-md py-2.5 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-                placeholder="Min 6 chars"
+                onChange={handlePasswordChange}
+                className={`w-full bg-bg-base border ${fieldErrors.password ? 'border-danger focus:border-danger focus:ring-danger' : 'border-border-muted focus:border-primary focus:ring-primary'} text-on-surface text-sm rounded-md py-2.5 px-3 focus:outline-none focus:ring-1 transition-all`}
+                placeholder="Min 8 chars, 1 Uppercase, 1 Symbol"
                 required
               />
+              {fieldErrors.password && <p className="text-danger text-xs mt-1.5 leading-tight">{fieldErrors.password}</p>}
             </div>
 
             <div>
@@ -128,11 +182,12 @@ const SignupPage = () => {
               <input
                 type="password"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full bg-bg-base border border-border-muted text-on-surface text-sm rounded-md py-2.5 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                onChange={handleConfirmPasswordChange}
+                className={`w-full bg-bg-base border ${fieldErrors.confirmPassword ? 'border-danger focus:border-danger focus:ring-danger' : 'border-border-muted focus:border-primary focus:ring-primary'} text-on-surface text-sm rounded-md py-2.5 px-3 focus:outline-none focus:ring-1 transition-all`}
                 placeholder="Retype password"
                 required
               />
+              {fieldErrors.confirmPassword && <p className="text-danger text-xs mt-1.5 leading-tight">{fieldErrors.confirmPassword}</p>}
             </div>
           </div>
 

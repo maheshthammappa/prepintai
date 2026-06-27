@@ -51,6 +51,15 @@ const LoginPage = () => {
 
   return (
     <div className="text-on-surface font-body-md h-screen w-full flex items-center justify-center p-container-margin relative overflow-hidden bg-transparent">
+      {/* Back to Home Button */}
+      <button 
+        onClick={() => navigate('/')}
+        className="absolute top-6 left-6 flex items-center gap-1.5 text-text-secondary hover:text-primary font-semibold text-sm transition-colors z-20"
+      >
+        <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+        Back to Home
+      </button>
+
       {/* Decorative background blur */}
       <div className="absolute -right-24 -top-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute -left-24 -bottom-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
