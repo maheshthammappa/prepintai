@@ -24,6 +24,7 @@ const LoginPage = () => {
   
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -95,14 +96,25 @@ const LoginPage = () => {
 
           <div>
             <label className="block font-label-md text-label-md text-text-secondary mb-2 uppercase tracking-wider">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-bg-base border border-border-muted text-on-surface text-sm rounded-md py-2.5 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-              placeholder="••••••••"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-bg-base border border-border-muted text-on-surface text-sm rounded-md py-2.5 px-3 pr-10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                placeholder="••••••••"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-primary transition-colors flex items-center justify-center"
+              >
+                <span className="material-symbols-outlined text-[18px]">
+                  {showPassword ? "visibility_off" : "visibility"}
+                </span>
+              </button>
+            </div>
           </div>
 
           <button

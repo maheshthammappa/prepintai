@@ -15,6 +15,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getHistory, wakeupBackend } from '../services/api';
+import { FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import { SiGmail } from 'react-icons/si';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -77,11 +79,27 @@ const HomePage = () => {
               <span className="material-symbols-outlined text-sm leading-none" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
             </button>
             <button
-              onClick={() => window.open('https://github.com', '_blank')}
+              onClick={() => window.open('https://github.com/maheshthammappa/prepintai', '_blank')}
               className="bg-surface-variant text-text-primary border border-border-muted font-semibold py-2.5 px-5 h-11 w-full sm:w-48 rounded-md hover:bg-outline-variant active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
             >
               View on GitHub
             </button>
+          </div>
+          
+          {/* Social Links (Desktop) */}
+          <div className="hidden lg:flex items-center gap-4 pt-4 border-t border-border-muted/50 mt-4">
+            <a href="https://www.linkedin.com/in/maheshthammappa/" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-primary transition-colors flex items-center justify-center" aria-label="LinkedIn" title="LinkedIn">
+              <FaLinkedin className="w-5 h-5" />
+            </a>
+            <a href="mailto:[okaymanthankyou@gmail.com]" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-primary transition-colors flex items-center justify-center" aria-label="Gmail" title="Gmail">
+              <SiGmail className="w-5 h-5" />
+            </a>
+            <a href="https://github.com/maheshthammappa" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-primary transition-colors flex items-center justify-center" aria-label="GitHub" title="GitHub">
+              <FaGithub className="w-5 h-5" />
+            </a>
+            <a href="https://www.instagram.com/maheshthammappa/" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-primary transition-colors flex items-center justify-center" aria-label="Instagram" title="Instagram">
+              <FaInstagram className="w-5 h-5" />
+            </a>
           </div>
         </div>
 
@@ -195,6 +213,22 @@ const HomePage = () => {
           )}
         </div>
       </main>
+
+      {/* Social Links (Mobile Footer) */}
+      <footer className="w-full mx-auto flex lg:hidden items-center justify-center gap-4 py-8 relative z-10">
+        <a href="https://www.linkedin.com/in/maheshthammappa/" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-primary transition-colors flex items-center justify-center" aria-label="LinkedIn" title="LinkedIn">
+          <FaLinkedin className="w-5 h-5" />
+        </a>
+        <a href="mailto:[okaymanthankyou@gmail.com]" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-primary transition-colors flex items-center justify-center" aria-label="Gmail" title="Gmail">
+          <SiGmail className="w-5 h-5" />
+        </a>
+        <a href="https://github.com/maheshthammappa" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-primary transition-colors flex items-center justify-center" aria-label="GitHub" title="GitHub">
+          <FaGithub className="w-5 h-5" />
+        </a>
+        <a href="https://www.instagram.com/maheshthammappa/" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-primary transition-colors flex items-center justify-center" aria-label="Instagram" title="Instagram">
+          <FaInstagram className="w-5 h-5" />
+        </a>
+      </footer>
     </div>
   );
 };
