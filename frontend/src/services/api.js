@@ -130,6 +130,16 @@ export const register = async (username, email, password) => {
   return response.data;
 };
 
+export const checkUsername = async (username) => {
+  const response = await apiClient.get(`/api/auth/check-username?username=${encodeURIComponent(username)}`);
+  return response.data.exists;
+};
+
+// Fire-and-forget ping to wake up the backend from sleep
+export const wakeupBackend = () => {
+  apiClient.get('/api/auth/ping').catch(() => {}); 
+};
+
 // Called on page load to verify the stored JWT is still valid
 // and to retrieve the current user's profile data.
 export const getMe = async () => {

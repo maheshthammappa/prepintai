@@ -228,7 +228,7 @@ const StandardInterviewComponent = ({ onStartInterview, onCancel, isEmbedded = f
                   <div>
                     <div className="flex justify-between mb-3">
                       <label className="font-label-md text-sm font-semibold text-on-surface">Est. Duration</label>
-                      <span className="font-code-md text-sm font-bold text-primary">{duration} mins</span>
+                      <span className="font-code-md text-sm font-bold text-primary">{duration}</span>
                     </div>
                     <input
                       type="range"
@@ -249,9 +249,9 @@ const StandardInterviewComponent = ({ onStartInterview, onCancel, isEmbedded = f
                 {/* 3. Experience Level Selector */}
                 <div>
                   <label className="block font-label-md text-sm font-semibold text-on-surface mb-3">Target Experience Level</label>
-                  <div className="flex gap-2 p-1 bg-surface-variant rounded border border-border-muted">
+                  <div className="flex gap-1 sm:gap-2 p-1 bg-surface-variant rounded border border-border-muted overflow-hidden">
                     {['Beginner', 'Intermediate', 'Advanced', 'Expert'].map((level) => (
-                      <label key={level} className="flex-1 cursor-pointer">
+                      <label key={level} className="flex-1 min-w-0 cursor-pointer">
                         <input
                           type="radio"
                           name="experienceLevel"
@@ -260,7 +260,7 @@ const StandardInterviewComponent = ({ onStartInterview, onCancel, isEmbedded = f
                           onChange={() => setExperienceLevel(level)}
                           className="peer sr-only"
                         />
-                        <div className="text-center py-2 px-1 rounded font-body-sm text-xs text-on-surface-variant border border-transparent peer-checked:bg-bg-card peer-checked:text-primary peer-checked:border-primary/20 transition-colors font-semibold">
+                        <div className="text-center py-2 px-0.5 sm:px-1 rounded font-body-sm text-[10px] sm:text-xs text-on-surface-variant border border-transparent peer-checked:bg-bg-card peer-checked:text-primary peer-checked:border-primary/20 transition-colors font-semibold truncate">
                           {level}
                         </div>
                       </label>

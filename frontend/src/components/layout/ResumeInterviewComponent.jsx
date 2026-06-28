@@ -141,10 +141,10 @@ const ResumeInterviewComponent = ({
                     </div>
                   </div>
 
-                  <div>
+                  {/* <div>
                     <div className="flex justify-between mb-3">
                       <label className="font-label-md text-sm font-semibold text-on-surface">Est. Duration</label>
-                      <span className="font-code-md text-sm font-bold text-primary">{resumeQuestionCount * 2} mins</span>
+                      <span className="font-code-md text-sm font-bold text-primary">{resumeQuestionCount * 2}</span>
                     </div>
                     <input
                       type="range"
@@ -158,7 +158,7 @@ const ResumeInterviewComponent = ({
                       <span>5 mins</span>
                       <span>30 mins</span>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* 3. Experience Level Selector */}

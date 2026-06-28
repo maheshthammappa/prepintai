@@ -91,15 +91,15 @@ const ProfileComponent = ({ user }) => {
   };
 
   return (
-    <div className="w-full max-w-[800px] mx-auto space-y-container-margin text-left pb-16 pt-8 px-4 md:px-10 animate-fadeIn">
-      <div>
-        <h2 className="font-headline-lg text-headline-lg font-bold text-text-primary">Your Profile</h2>
-        <p className="font-body-md text-body-md text-text-secondary">Manage your account settings and preferences.</p>
+    <div className="w-full max-w-[800px] mx-auto space-y-container-margin text-left pb-16 pt-8 px-0 md:px-6 animate-fadeIn">
+      <div className=''>
+        <h2 className="font-headline-lg text-headline-lg font-bold text-text-primary text-center md:text-left">Your Profile</h2>
+        <p className="font-body-md text-body-md text-text-secondary text-center md:text-left">Manage your account settings and preferences.</p>
       </div>
       
       <div className="bg-bg-card border border-border-muted rounded-xl p-6 md:p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] mt-6">
         {/* ── Avatar + Name Header ── */}
-        <div className="flex items-center gap-5 mb-6 border-b border-border-muted pb-6">
+        <div className="flex items-center flex-col md:flex-row gap-5 mb-6 border-b border-border-muted pb-6">
           {/* Avatar */}
           <div className="w-20 h-20 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center text-primary font-bold text-3xl shrink-0 shadow-sm">
             {(displayUser.username)[0].toUpperCase()}
@@ -161,7 +161,7 @@ const ProfileComponent = ({ user }) => {
             <button 
               type="submit"
               disabled={loading}
-              className="bg-primary text-on-primary font-bold py-2.5 px-5 rounded-md shadow-md hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+              className="bg-primary text-on-primary font-bold py-2.5 px-5 rounded-md shadow-md hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer w-full"
             >
               {loading ? 'Saving...' : 'Save Changes'}
             </button>

@@ -428,17 +428,19 @@ const DashboardPage = () => {
       </header>
 
       {/* ── Body: Sidebar + Main Content ──────────────────────────────────── */}
-      <div className="flex-1 flex overflow-hidden pt-16 relative w-full">
+      <div className="flex-1 flex overflow-hidden pt-16 pb-16 md:pb-0 relative w-full">
         
         {/* FIXED Left Collapsible Sidebar */}
         <nav 
-          className={`bg-surface-container-low border-r border-border-muted flex flex-col py-4 z-40 transition-all duration-300 fixed left-0 top-16 bottom-0 ${
-            isSidebarOpen ? 'w-80 lg:w-96 translate-x-0' : 'w-0 -translate-x-full overflow-hidden'
+          className={`bg-surface-container-low flex flex-col py-4 z-40 transition-all duration-300 fixed left-0 top-16 bottom-0 ${
+            isSidebarOpen ? 'w-80 lg:w-96 translate-x-0 border-r border-border-muted' : 'w-0 -translate-x-full overflow-hidden border-none'
           }`}
         >
           <div className="px-5 mb-6 mt-2">
             <p className="text-sm font-medium text-text-secondary mt-2">WELCOME</p>
-            <p className='text-3xl font-extrabold text-primary mb-2 mt-1'>{user?.username.toUpperCase() || 'Developer'}</p>
+            <p className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-primary mb-2 mt-1 truncate" title={user?.username.toUpperCase() || 'Developer'}>
+              {user?.username.toUpperCase() || 'Developer'}
+            </p>
             <p className="text-sm font-medium text-text-secondary mt-2">
               Ready to mock practice?
             </p>
@@ -457,7 +459,7 @@ const DashboardPage = () => {
           <div className="flex flex-col flex-grow px-2 gap-1 overflow-y-auto">
             
             <button
-              onClick={() => handleViewChange('/dashboard')}
+              onClick={() => { handleViewChange('/dashboard'); if (window.innerWidth < 768) setIsSidebarOpen(false); }}
               className={
                 currentView === 'analytics'
                   ? "bg-secondary-container text-on-secondary-container border-l-4 border-primary px-3 py-2 flex items-center gap-3 rounded-r-sm font-label-md text-label-md text-left w-full cursor-pointer font-bold"
@@ -469,7 +471,7 @@ const DashboardPage = () => {
             </button>
 
             <button
-              onClick={() => handleViewChange('/profile')}
+              onClick={() => { handleViewChange('/profile'); if (window.innerWidth < 768) setIsSidebarOpen(false); }}
               className={
                 currentView === 'profile'
                   ? "bg-secondary-container text-on-secondary-container border-l-4 border-primary px-3 py-2 flex items-center gap-3 rounded-r-sm font-label-md text-label-md text-left w-full cursor-pointer font-bold"
@@ -481,7 +483,7 @@ const DashboardPage = () => {
             </button>
 
             <button
-              onClick={() => handleViewChange('/standard-practice')}
+              onClick={() => { handleViewChange('/standard-practice'); if (window.innerWidth < 768) setIsSidebarOpen(false); }}
               className={
                 currentView === 'standard-setup' || currentView === 'standard-interview'
                   ? "bg-secondary-container text-on-secondary-container border-l-4 border-primary px-3 py-2 flex items-center gap-3 rounded-r-sm font-label-md text-label-md text-left w-full cursor-pointer font-bold"
@@ -493,7 +495,7 @@ const DashboardPage = () => {
             </button>
 
             <button
-              onClick={() => handleViewChange('/resume-practice')}
+              onClick={() => { handleViewChange('/resume-practice'); if (window.innerWidth < 768) setIsSidebarOpen(false); }}
               className={
                 currentView === 'resume-setup' || currentView === 'resume-interview'
                   ? "bg-secondary-container text-on-secondary-container border-l-4 border-primary px-3 py-2 flex items-center gap-3 rounded-r-sm font-label-md text-label-md text-left w-full cursor-pointer font-bold"
@@ -505,7 +507,7 @@ const DashboardPage = () => {
             </button>
 
             <button
-              onClick={() => handleViewChange('/history')}
+              onClick={() => { handleViewChange('/history'); if (window.innerWidth < 768) setIsSidebarOpen(false); }}
               className={
                 currentView === 'history' || currentView === 'report'
                   ? "bg-secondary-container text-on-secondary-container border-l-4 border-primary px-3 py-2 flex items-center gap-3 rounded-r-sm font-label-md text-label-md text-left w-full cursor-pointer font-bold"
@@ -517,7 +519,7 @@ const DashboardPage = () => {
             </button>
 
             <button
-              onClick={() => handleViewChange('/qa')}
+              onClick={() => { handleViewChange('/qa'); if (window.innerWidth < 768) setIsSidebarOpen(false); }}
               className={
                 currentView === 'quick-qa'
                   ? "bg-secondary-container text-on-secondary-container border-l-4 border-primary px-3 py-2 flex items-center gap-3 rounded-r-sm font-label-md text-label-md text-left w-full cursor-pointer font-bold"
@@ -550,13 +552,17 @@ const DashboardPage = () => {
             padding so NO view starts flush against the sidebar edge. */}
         <main 
           className={`flex-1 flex flex-col min-h-0 relative z-10 transition-all duration-300 ${
-            ['analytics', 'history', 'report', 'profile'].includes(currentView) ? 'overflow-y-auto' : 'overflow-hidden'
+            ['analytics', 'history', 'report', 'profile', 'standard-setup', 'resume-setup'].includes(currentView) 
+              ? 'overflow-y-auto' 
+              : ['standard-interview', 'resume-interview'].includes(currentView)
+                ? 'overflow-y-auto md:overflow-hidden'
+                : 'overflow-hidden'
           } ${
             isSidebarOpen ? 'md:pl-80 lg:pl-96' : 'md:pl-0'
           }`}
         >
           {/* ── Shared content gutter: all views share this padding ── */}
-          <div className="flex-1 flex flex-col w-full min-h-0 pl-4 md:pl-8">
+          <div className="flex-1 flex flex-col w-full min-h-0 px-4 md:px-8">
 
             {/* ── View 1: Dashboard Home (analytics overview) ── */}
             {currentView === 'analytics' && (
@@ -577,47 +583,41 @@ const DashboardPage = () => {
 
             {/* ── View 2: Standard Interview Setup ── */}
             {currentView === 'standard-setup' && (
-              <div className="flex-grow overflow-y-auto p-4 md:p-6 w-full h-full custom-scrollbar">
-                <div className="max-w-4xl w-full mx-auto min-h-full flex flex-col justify-center py-4">
-                <StandardInterviewComponent
-                  isEmbedded={true}
-                  onStartInterview={(interviewData) => {
-                    const sessionData = {
-                      questions: interviewData.questions,
-                      topic: interviewData.topic,
-                      experienceLevel: interviewData.experienceLevel,
-                      duration: interviewData.duration,
-                      answers: {},
-                      currentIndex: 0,
-                      timeLeft: interviewData.duration * 60
-                    };
-                    sessionStorage.setItem('prepintai_active_session', JSON.stringify(sessionData));
-                    setActiveInterviewData(sessionData);
-                    navigate('/interview');
-                  }}
-                  onCancel={() => handleViewChange('/dashboard')}
-                />
-                </div>
-              </div>
+              <StandardInterviewComponent
+                isEmbedded={true}
+                onStartInterview={(interviewData) => {
+                  const sessionData = {
+                    questions: interviewData.questions,
+                    topic: interviewData.topic,
+                    experienceLevel: interviewData.experienceLevel,
+                    duration: interviewData.duration,
+                    answers: {},
+                    currentIndex: 0,
+                    timeLeft: interviewData.duration * 60
+                  };
+                  sessionStorage.setItem('prepintai_active_session', JSON.stringify(sessionData));
+                  setActiveInterviewData(sessionData);
+                  navigate('/interview');
+                }}
+                onCancel={() => handleViewChange('/dashboard')}
+              />
             )}
 
             {/* ── View 3: Standard Interview in Progress ── */}
             {currentView === 'standard-interview' && activeInterviewData && (
-              <div className="flex-1 flex flex-col min-h-0 w-full">
-                <InterviewComponent
-                  isEmbedded={true}
-                  questions={activeInterviewData.questions}
-                  topic={activeInterviewData.topic}
-                  experienceLevel={activeInterviewData.experienceLevel}
-                  duration={activeInterviewData.duration}
-                  onFinishInterview={(report) => {
-                    refreshHistory();
-                    setActiveReportData(report);
-                    navigate('/report/' + report.id);
-                  }}
-                  onExit={() => handleViewChange('/dashboard')}
-                />
-              </div>
+              <InterviewComponent
+                isEmbedded={true}
+                questions={activeInterviewData.questions}
+                topic={activeInterviewData.topic}
+                experienceLevel={activeInterviewData.experienceLevel}
+                duration={activeInterviewData.duration}
+                onFinishInterview={(report) => {
+                  refreshHistory();
+                  setActiveReportData(report);
+                  navigate('/report/' + report.id);
+                }}
+                onExit={() => handleViewChange('/dashboard')}
+              />
             )}
 
             {/* ── View 4: Resume Interview Setup ── */}
@@ -644,21 +644,19 @@ const DashboardPage = () => {
 
             {/* ── View 5: Resume Interview in Progress ── */}
             {currentView === 'resume-interview' && activeInterviewData && (
-              <div className="flex-1 flex flex-col min-h-0 w-full">
-                <InterviewComponent
-                  isEmbedded={true}
-                  questions={activeInterviewData.questions}
-                  topic={activeInterviewData.topic}
-                  experienceLevel={activeInterviewData.experienceLevel}
-                  duration={activeInterviewData.duration}
-                  onFinishInterview={(report) => {
-                    refreshHistory();
-                    setActiveReportData(report);
-                    navigate('/report/' + report.id);
-                  }}
-                  onExit={() => handleViewChange('/dashboard')}
-                />
-              </div>
+              <InterviewComponent
+                isEmbedded={true}
+                questions={activeInterviewData.questions}
+                topic={activeInterviewData.topic}
+                experienceLevel={activeInterviewData.experienceLevel}
+                duration={activeInterviewData.duration}
+                onFinishInterview={(report) => {
+                  refreshHistory();
+                  setActiveReportData(report);
+                  navigate('/report/' + report.id);
+                }}
+                onExit={() => handleViewChange('/dashboard')}
+              />
             )}
 
             {/* ── View 6: Interview History Table ── */}
@@ -672,14 +670,12 @@ const DashboardPage = () => {
 
             {/* ── View 7: View Report (from history or fresh) ── */}
             {currentView === 'report' && (
-              <div className="flex-1 w-full overflow-y-auto animate-fadeIn">
-                <ViewReportComponent
-                  isEmbedded={true}
-                  reportId={activeReportId}
-                  reportData={activeReportData}
-                  onBack={() => handleViewChange('/history')}
-                />
-              </div>
+              <ViewReportComponent
+                isEmbedded={true}
+                reportId={activeReportId}
+                reportData={activeReportData}
+                onBack={() => handleViewChange('/history')}
+              />
             )}
 
             {/* ── View 8: Profile Settings ── */}
@@ -745,11 +741,11 @@ const DashboardPage = () => {
       )}
 
       {/* FIXED Mobile Bottom Navigation Bar */}
-      <nav className="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container-highest border-t border-border-muted shadow-lg flex justify-around items-center h-16 px-4">
+      <nav className="md:hidden fixed bottom-0 left-0 w-full z-50 bg-surface-container-highest border-t border-border-muted shadow-lg flex justify-around items-center h-16">
         <button
           onClick={() => handleViewChange('/dashboard')}
-          className={`flex flex-col items-center justify-center rounded-xl py-1 px-3 scale-90 duration-75 cursor-pointer font-bold ${
-            currentView === 'analytics' ? 'bg-primary-container text-on-primary-container' : 'text-on-surface-variant'
+          className={`flex flex-col items-center justify-center flex-1 h-full scale-90 duration-75 cursor-pointer font-bold border-t-2 transition-all ${
+            currentView === 'analytics' ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant'
           }`}
         >
           <span className="material-symbols-outlined">home</span>
@@ -758,8 +754,8 @@ const DashboardPage = () => {
 
         <button
           onClick={() => handleViewChange('/standard-practice')}
-          className={`flex flex-col items-center justify-center rounded-xl py-1 px-3 scale-90 duration-75 cursor-pointer font-bold ${
-            currentView === 'standard-setup' || currentView === 'standard-interview' ? 'bg-primary-container text-on-primary-container' : 'text-on-surface-variant'
+          className={`flex flex-col items-center justify-center flex-1 h-full scale-90 duration-75 cursor-pointer font-bold border-t-2 transition-all ${
+            currentView === 'standard-setup' || currentView === 'standard-interview' ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant'
           }`}
         >
           <span className="material-symbols-outlined">code</span>
@@ -768,8 +764,8 @@ const DashboardPage = () => {
 
         <button
           onClick={() => handleViewChange('/history')}
-          className={`flex flex-col items-center justify-center rounded-xl py-1 px-3 scale-90 duration-75 cursor-pointer font-bold ${
-            currentView === 'history' || currentView === 'report' ? 'bg-primary-container text-on-primary-container' : 'text-on-surface-variant'
+          className={`flex flex-col items-center justify-center flex-1 h-full scale-90 duration-75 cursor-pointer font-bold border-t-2 transition-all ${
+            currentView === 'history' || currentView === 'report' ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant'
           }`}
         >
           <span className="material-symbols-outlined">bar_chart</span>
@@ -781,7 +777,7 @@ const DashboardPage = () => {
             logout();
             navigate('/');
           }}
-          className="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant scale-90 duration-75 p-2 rounded cursor-pointer font-semibold"
+          className="flex flex-col items-center justify-center flex-1 h-full text-on-surface-variant active:bg-surface-variant scale-90 duration-75 border-t-2 border-transparent cursor-pointer font-semibold"
         >
           <span className="material-symbols-outlined">logout</span>
           <span className="font-label-md text-label-md mt-1">Logout</span>

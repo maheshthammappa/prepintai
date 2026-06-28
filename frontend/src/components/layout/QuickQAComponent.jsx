@@ -98,13 +98,13 @@ const QuickQAComponent = () => {
   };
 
   return (
-    <div className="w-full max-w-[1100px] mx-auto text-left pb-16 pt-8 pr-6 md:pr-10 animate-fadeIn h-full flex flex-col">
+    <div className="w-full max-w-[1100px] mx-auto text-left pb-4 md:pb-16 pt-8 px-0 md:px-6 animate-fadeIn h-full flex flex-col">
       <div className="mb-4 shrink-0">
-        <h2 className="font-headline-lg text-headline-lg font-bold text-text-primary">Quick Q&A (AI Mentor)</h2>
-        <p className="font-body-md text-body-md text-text-secondary">Ask your doubts directly. These sessions are not saved to history.</p>
+        <h2 className="font-headline-lg text-headline-lg font-bold text-text-primary text-center md:text-left">Quick Q&A (AI Mentor)</h2>
+        <p className="font-body-md text-body-md text-text-secondary text-center md:text-left">Ask your doubts directly. These sessions are not saved to history.</p>
       </div>
 
-      <div className="flex-1 bg-bg-card border border-border-muted rounded-xl flex flex-col overflow-hidden shadow-sm mt-2 relative min-h-[500px]">
+      <div className="flex-1 bg-bg-card border border-border-muted rounded-xl flex flex-col overflow-hidden shadow-sm mt-2 relative min-h-0">
         {/* Chat Area */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 custom-scrollbar">
           {messages.map((msg, idx) => (
@@ -173,7 +173,7 @@ const QuickQAComponent = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask anything about code, concepts, or interview prep..."
+              placeholder="Ask a question..."
               className="flex-1 bg-bg-base text-on-surface border border-border-muted focus:border-primary focus:ring-1 focus:ring-primary outline-none rounded-xl py-3 px-4 resize-none min-h-[52px] max-h-[150px] custom-scrollbar text-sm transition-all"
               rows={input.split('\n').length > 1 ? Math.min(input.split('\n').length, 5) : 1}
             />

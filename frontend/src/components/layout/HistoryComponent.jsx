@@ -17,10 +17,10 @@ import { SkeletonTable } from '../ui/Skeleton';
 
 const HistoryComponent = ({ history, loading, onViewChange }) => {
   return (
-    <div className="w-full max-w-[1100px] mx-auto space-y-container-margin text-left pb-16 pt-8 pr-6 md:pr-10">
+    <div className="w-full max-w-[1100px] mx-auto space-y-container-margin text-left pb-16 pt-8 px-0 md:px-6">
       <div>
-        <h2 className="font-headline-lg text-headline-lg font-bold text-text-primary">Interview History</h2>
-        <p className="font-body-md text-body-md text-text-secondary">Browse through all your historical mock performance assessments.</p>
+        <h2 className="font-headline-lg text-headline-lg font-bold text-text-primary text-center md:text-left">Interview History</h2>
+        <p className="font-body-md text-body-md text-text-secondary text-center md:text-left">Browse through all your historical mock performance assessments.</p>
       </div>
 
       {loading ? (

@@ -30,7 +30,7 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username.trim() || !password.trim()) {
-      setError('Please enter both username and password.');
+      setError('Please enter both your username/email and password.');
       return;
     }
 
@@ -43,7 +43,7 @@ const LoginPage = () => {
       navigate('/dashboard');
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || 'Invalid username or password.');
+      setError(err.response?.data?.message || 'Invalid credentials.');
     } finally {
       setLoading(false);
     }
@@ -67,8 +67,8 @@ const LoginPage = () => {
       <div className="bg-bg-card border border-border-muted rounded w-full max-w-md shadow-lg p-card-padding text-left relative z-10 animate-fadeIn">
         <div className="mb-6 text-center">
           <h1 className="font-headline-lg text-headline-lg font-bold text-primary flex items-center justify-center gap-2">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>terminal</span>
-            PrepIntAI
+            <span className="material-symbols-outlined text-white" style={{ fontVariationSettings: "'FILL' 1" }}>terminal</span>
+            PREPINTAI
           </h1>
           <p className="font-label-md text-label-md text-text-secondary mt-1">Sign in to your AI Coach dashboard</p>
         </div>
@@ -82,13 +82,13 @@ const LoginPage = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-label-md text-label-md text-text-secondary mb-2 uppercase tracking-wider">Username</label>
+            <label className="block font-label-md text-label-md text-text-secondary mb-2 uppercase tracking-wider">Username or Email</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full bg-bg-base border border-border-muted text-on-surface text-sm rounded-md py-2.5 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-              placeholder="Enter your username"
+              placeholder="Enter your username or email"
               required
             />
           </div>

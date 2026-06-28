@@ -86,14 +86,29 @@ public class AuthController {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            User user = userRepository.findByUsername(loginRequest.username())
+            String authenticatedUsername = authentication.getName();
+            User user = userRepository.findByUsername(authenticatedUsername)
                     .orElseThrow(() -> new RuntimeException("Error: User not found."));
 
             String token = jwtUtils.generateToken(user.getUsername());
             return ResponseEntity.ok(new AuthResponse(token, user.getUsername(), user.getEmail()));
         } catch (Exception e) {
-            return ResponseEntity.status(401).body(Map.of("message", "Invalid username or password!"));
+            return ResponseEntity.status(401).body(Map.of("message", "Invalid credentials!"));
         }
+    }
+
+    @GetMapping("/check-username")
+    public ResponseEntity<?> checkUsername(@RequestParam String username) {
+        if (username == null || username.trim().isEmpty()) {
+            return ResponseEntity.ok(Map.of("exists", false));
+        }
+        boolean exists = userRepository.existsByUsername(username.trim());
+        return ResponseEntity.ok(Map.of("exists", exists));
+    }
+
+    @GetMapping("/ping")
+    public ResponseEntity<?> ping() {
+        return ResponseEntity.ok(Map.of("status", "awake"));
     }
 
     @GetMapping("/me")

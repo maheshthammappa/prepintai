@@ -320,7 +320,7 @@ const ViewReportComponent = ({ reportId = null, reportData = null, onBack, isEmb
       )}
 
       {/* Combined Evaluation Report & Summary Card */}
-      <div className="w-full max-w-[1100px] mx-auto px-0 pt-6 pb-6 space-y-8 relative z-10 pr-6 md:pr-10">
+      <div className="w-full max-w-[1100px] mx-auto px-0 pt-6 pb-6 space-y-8 relative z-10">
         {isEmbedded && (
           <button
             onClick={() => {

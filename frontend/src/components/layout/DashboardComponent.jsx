@@ -167,10 +167,10 @@ const DashboardComponent = ({
   onViewChange
 }) => {
   return (
-    <div className="w-full max-w-[1100px] mx-auto space-y-container-margin text-left pb-16 pt-8 pr-6 md:pr-10">
+    <div className="w-full max-w-[1100px] mx-auto space-y-container-margin text-left pb-16 pt-8 px-0 md:px-6">
       <div>
-        <h2 className="font-headline-lg text-headline-lg font-bold text-text-primary">Dashboard</h2>
-        <p className="font-body-md text-body-md text-text-secondary">Overview of your interview performance and consistency.</p>
+        <h2 className="font-headline-lg text-headline-lg font-bold text-text-primary text-center md:text-left">Dashboard</h2>
+        <p className="font-body-md text-body-md text-text-secondary text-center md:text-left">Overview of your interview performance and consistency.</p>
       </div>
 
       {error && (

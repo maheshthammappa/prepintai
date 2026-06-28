@@ -10,10 +10,10 @@
 //   4. Calls AuthContext.login(token, user) to log the user in immediately
 //   5. Navigates to /dashboard (user lands directly in the app after signup)
 // ─────────────────────────────────────────────────────────────────────────────
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { register as registerApi } from '../services/api';
+import { register as registerApi, checkUsername } from '../services/api';
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const SignupPage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [fieldErrors, setFieldErrors] = useState({ username: '', password: '', confirmPassword: '' });
+  const [fieldErrors, setFieldErrors] = useState({ username: '', email: '', password: '', confirmPassword: '' });
 
   const handleUsernameChange = (e) => {
     const val = e.target.value;
@@ -34,6 +34,47 @@ const SignupPage = () => {
       setFieldErrors(prev => ({ ...prev, username: 'Username must be at least 8 characters.' }));
     } else {
       setFieldErrors(prev => ({ ...prev, username: '' }));
+    }
+  };
+
+  // Real-time username availability check
+  useEffect(() => {
+    if (username.trim().length >= 8) {
+      const check = async () => {
+        try {
+          const exists = await checkUsername(username.trim());
+          if (exists) {
+            setFieldErrors(prev => ({ ...prev, username: 'Username is already taken.' }));
+          } else {
+            // Only clear the error if it was specifically the "taken" error
+            setFieldErrors(prev => (prev.username === 'Username is already taken.' ? { ...prev, username: '' } : prev));
+          }
+        } catch (e) {
+          console.error("Failed to check username availability", e);
+        }
+      };
+      
+      const timer = setTimeout(check, 500); // 500ms debounce
+      return () => clearTimeout(timer);
+    }
+  }, [username]);
+
+  const validateEmail = (emailStr) => {
+    if (!emailStr) return '';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailStr)) {
+      return 'Please enter a valid email address.';
+    }
+    return '';
+  };
+
+  const handleEmailChange = (e) => {
+    const val = e.target.value;
+    setEmail(val);
+    if (val.trim().length > 0) {
+      setFieldErrors(prev => ({ ...prev, email: validateEmail(val.trim()) }));
+    } else {
+      setFieldErrors(prev => ({ ...prev, email: '' }));
     }
   };
 
@@ -80,6 +121,12 @@ const SignupPage = () => {
       return;
     }
 
+    const emailErr = validateEmail(email.trim());
+    if (emailErr) {
+      setError(emailErr);
+      return;
+    }
+
     const passError = validatePassword(password);
     if (passError) {
       setError(passError);
@@ -88,6 +135,11 @@ const SignupPage = () => {
 
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
+      return;
+    }
+
+    if (fieldErrors.username || fieldErrors.email || fieldErrors.password || fieldErrors.confirmPassword) {
+      setError('Please resolve all validation errors before signing up.');
       return;
     }
 
@@ -124,8 +176,8 @@ const SignupPage = () => {
       <div className="bg-bg-card border border-border-muted rounded w-full max-w-md shadow-lg p-card-padding text-left relative z-10 animate-fadeIn">
         <div className="mb-6 text-center">
           <h1 className="font-headline-lg text-headline-lg font-bold text-primary flex items-center justify-center gap-2">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>terminal</span>
-            PrepIntAI
+            <span className="material-symbols-outlined text-white" style={{ fontVariationSettings: "'FILL' 1" }}>terminal</span>
+            PREPINTAI
           </h1>
           <p className="font-label-md text-label-md text-text-secondary mt-1">Create an account to get started</p>
         </div>
@@ -156,11 +208,12 @@ const SignupPage = () => {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-bg-base border border-border-muted text-on-surface text-sm rounded-md py-2.5 px-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              onChange={handleEmailChange}
+              className={`w-full bg-bg-base border ${fieldErrors.email ? 'border-danger focus:border-danger focus:ring-danger' : 'border-border-muted focus:border-primary focus:ring-primary'} text-on-surface text-sm rounded-md py-2.5 px-3 focus:outline-none focus:ring-1 transition-all`}
               placeholder="you@example.com"
               required
             />
+            {fieldErrors.email && <p className="text-danger text-xs mt-1.5">{fieldErrors.email}</p>}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
