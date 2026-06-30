@@ -38,13 +38,18 @@ import BackendConnection from "./connection/BackendConnection";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ui/ProtectedRoute";
 
+const basename =
+  import.meta.env.VITE_DEPLOY_TARGET === "github"
+    ? "/prepintai"
+    : "";
+
 function App() {
   return (
     // AuthProvider makes user/token/login/logout available to all child components
     <AuthProvider>
       {/* BrowserRouter enables URL-based navigation. basename="/prepintai" means
           all routes are relative to /prepintai (e.g. the GitHub Pages deployment path) */}
-      <BrowserRouter basename="/prepintai">
+      <BrowserRouter basename={basename}>
         <Routes>
           {/* ── PUBLIC ROUTES ── accessible without login ── */}
           <Route path="/" element={<HomePage />} />
@@ -76,4 +81,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;
