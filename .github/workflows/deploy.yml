@@ -38,6 +38,7 @@
           run: npm run build
           env:
             VITE_API_URL: ${{ secrets.VITE_API_URL }}
+            VITE_DEPLOY_TARGET: ${{ secrets.VITE_DEPLOY_TARGET }}
 
         - name: Upload Pages Artifact
           uses: actions/upload-pages-artifact@v3
