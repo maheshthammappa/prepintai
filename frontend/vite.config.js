@@ -8,5 +8,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-  base: '/prepintai/',
+  base: process.env.VITE_DEPLOY_TARGET === 'github'
+    ? '/prepintai/'
+    : '/',
 })
