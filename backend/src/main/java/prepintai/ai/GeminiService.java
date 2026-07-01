@@ -215,11 +215,12 @@ public class GeminiService {
             "\"%s\"\n\n" +
             "Provide a helpful, accurate, and concise answer.\n" +
             "Focus on explaining the concept clearly. Use code snippets only if necessary.\n" +
+            "IMPORTANT: Your detailed answer MUST use rich Markdown formatting (e.g., headings like ###, bullet points, bold text, and code blocks) to make it easy to read.\n" +
             "You must return the response strictly as a JSON object matching this schema:\n" +
             "{\n" +
-            "  \"answer\": \"your detailed answer here...\"\n" +
+            "  \"answer\": \"your detailed markdown-formatted answer here (use \\n for line breaks)...\"\n" +
             "}\n" +
-            "Do not return any markdown formatting outside of JSON. Just raw JSON.",
+            "Do not return any markdown formatting outside of the JSON object (i.e. do not wrap the JSON in ```json). Just raw JSON.",
             question
         );
 

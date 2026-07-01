@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { askDoubt } from '../../services/api';
 
 const QuickQAComponent = () => {
@@ -126,12 +127,25 @@ const QuickQAComponent = () => {
                     ? 'bg-primary text-on-primary rounded-tr-none' 
                     : 'bg-surface-container-high text-text-primary border border-border-muted rounded-tl-none'
                 }`}>
-                  {msg.content.split('\n').map((line, i) => (
-                    <React.Fragment key={i}>
-                      {line}
-                      {i !== msg.content.split('\n').length - 1 && <br />}
-                    </React.Fragment>
-                  ))}
+                  <ReactMarkdown
+                    components={{
+                      h1: ({node, ...props}) => <h1 className="text-xl font-bold mb-2 mt-4" {...props} />,
+                      h2: ({node, ...props}) => <h2 className="text-lg font-bold mb-2 mt-3" {...props} />,
+                      h3: ({node, ...props}) => <h3 className="text-base font-bold mb-1 mt-2" {...props} />,
+                      p: ({node, ...props}) => <p className="mb-2 last:mb-0 leading-relaxed" {...props} />,
+                      ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-2" {...props} />,
+                      ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-2" {...props} />,
+                      li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                      a: ({node, ...props}) => <a className="text-blue-500 hover:underline" {...props} />,
+                      code: ({node, inline, ...props}) => 
+                        inline 
+                          ? <code className="bg-black/10 dark:bg-white/10 rounded px-1 py-0.5 text-sm" {...props} /> 
+                          : <code className="block bg-black/10 dark:bg-white/10 p-3 rounded mb-2 overflow-x-auto text-sm font-mono" {...props} />,
+                      pre: ({node, ...props}) => <pre className="mb-2 p-0 bg-transparent" {...props} />
+                    }}
+                  >
+                    {msg.content}
+                  </ReactMarkdown>
                 </div>
               </div>
             </div>
